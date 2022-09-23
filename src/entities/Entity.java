@@ -1,17 +1,12 @@
 package entities;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import graphics.Sprite;
 
 public abstract class Entity {
-    //Tọa độ X tính từ góc trái trên trong Canvas
+    public static final int jumpPixel = 32;
     protected int x;
-
-    //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int y;
 
     protected Image img;
