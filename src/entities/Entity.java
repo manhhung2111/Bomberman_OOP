@@ -4,12 +4,21 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import graphics.Sprite;
 
+import java.awt.image.BufferedImage;
+
 public abstract class Entity {
     public static final int jumpPixel = 32;
     protected int x;
     protected int y;
 
     protected Image img;
+
+    public int speed; //speed of entity
+
+    public String direction; //direction of player
+
+    public int spriteCounter = 0;
+    public int spriteNum = 1;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity( int xUnit, int yUnit, Image img) {

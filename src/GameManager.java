@@ -11,6 +11,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+
+
+/*import javafx.animation.Animation;
+import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import javafx.util.Duration;*/
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -32,7 +42,7 @@ public class GameManager {
 
     private List<Entity> DynamicEntities = new ArrayList<>();
     private List<Entity> StaticEntities = new ArrayList<>();
-    private Bomber player;
+    public static Bomber player;
 
     // Key listeners
     private boolean isRightKeyPressed;
@@ -42,6 +52,7 @@ public class GameManager {
     private boolean isSpaceKeyPressed;
 
     // Constructor
+
     GameManager(){
         this.canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         this.graphicsContext = canvas.getGraphicsContext2D();
@@ -51,7 +62,7 @@ public class GameManager {
         this.DynamicEntities = new ArrayList<>();
         this.StaticEntities = new ArrayList<>();
         player = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        DynamicEntities.add(player);
+        //DynamicEntities.add(player);
         this.isDownKeyPressed = false;
         this.isLeftKeyPressed = false;
         this.isUpKeyPressed = false;
@@ -126,16 +137,28 @@ public class GameManager {
                 int i = player.getY() / 32;
                 if(event.getCode() == KeyCode.RIGHT){
                     isRightKeyPressed = true;
-                    if(map[i][j+1] == 0) player.moveRight();
+                    if(map[i][j+1] == 0) {
+                        player.moveRight();
+                        player.setImg(Sprite.player_right.getFxImage());
+                    }
                 } else if(event.getCode() == KeyCode.LEFT){
                     isLeftKeyPressed = true;
-                    if(map[i][j-1] == 0) player.moveLeft();
+                    if(map[i][j-1] == 0) {
+                        player.moveLeft();
+                        player.setImg(Sprite.player_left.getFxImage());
+                    }
                 } else if(event.getCode() == KeyCode.DOWN){
                     isDownKeyPressed = true;
-                    if(map[i+1][j] == 0) player.moveDown();
+                    if(map[i+1][j] == 0) {
+                        player.moveDown();
+                        player.setImg(Sprite.player_down.getFxImage());
+                    }
                 } else if(event.getCode() == KeyCode.UP){
                     isUpKeyPressed = true;
-                    if(map[i-1][j] == 0) player.moveUp();
+                    if(map[i-1][j] == 0) {
+                        player.moveUp();
+                        player.setImg(Sprite.player_up.getFxImage());
+                    }
                 } else if(event.getCode() == KeyCode.SPACE){
                     isSpaceKeyPressed = true;
                     StaticEntities.add(new Bomb(player.getX()/32, player.getY()/32, Sprite.bomb.getFxImage()));
@@ -164,11 +187,13 @@ public class GameManager {
 
     public void update() {
         DynamicEntities.forEach(Entity::update);
+        player.update();
     }
 
     public void render() {
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         StaticEntities.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
+        player.render(graphicsContext);
     }
 }

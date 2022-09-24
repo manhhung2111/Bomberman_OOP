@@ -4,7 +4,11 @@ import entities.Entity;
 import graphics.Sprite;
 import javafx.scene.image.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.Buffer;
 
 public class Bomber extends Entity {
 
@@ -12,24 +16,53 @@ public class Bomber extends Entity {
         super( x, y, img);
     }
 
+    /*public void setDefaultValues() {
+        x = 100;
+        y= 100;
+        speed = 4;
+        direction = "right";
+    }*/
     @Override
     public void update() {
-
+        /*(switch(direction) {
+            case "up":
+                this.img = Sprite.player_up.getFxImage();
+                break;
+            case "down":
+                this.img = Sprite.player_down.getFxImage();
+                break;
+            case "right":
+                this.img = Sprite.player_right.getFxImage();
+                break;
+            case "left":
+                this.img = Sprite.player_left.getFxImage();
+        }*/
     }
+    /*public void getBomberImage() {
+        try {
+            up = ImageIO.read(getClass().getResourceAsStream("res/sprites/player_up"));
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
 
+    }*/
     public void moveLeft() {
+        direction = "left";
         this.x -= Entity.jumpPixel;
     }
 
     public void moveRight(){
+        direction = "right";
         this.x += Entity.jumpPixel;
     }
 
     public void moveUp() {
+        direction = "up";
         this.y -= Entity.jumpPixel;
     }
 
     public void moveDown() {
+        direction = "down";
         this.y += Entity.jumpPixel;
     }
 
@@ -37,6 +70,14 @@ public class Bomber extends Entity {
         this.y = this.y;
         this.x = this.x;
     }
+    /*public Image render(){
+        Image player = null;
+
+        return img;
+    }
+    public void setImg() {
+        this.img = render();
+    }*/
 
     public boolean isCollide(Entity entity){
         // Sides of player
