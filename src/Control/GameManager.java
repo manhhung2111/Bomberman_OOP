@@ -1,3 +1,6 @@
+package Control;
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
 import entities.*;
 import entities.DynamicEntities.Bomber;
 import entities.StaticEntities.Grass;
@@ -34,7 +37,7 @@ public class GameManager {
     /**
      * -1: wall; 0: grass, 1: brick
      */
-
+    public boolean isRunning = true;
     private GraphicsContext graphicsContext;
     private Canvas canvas;
 
@@ -45,15 +48,16 @@ public class GameManager {
     public static Bomber player;
 
     // Key listeners
-    private boolean isRightKeyPressed;
-    private boolean isLeftKeyPressed;
-    private boolean isUpKeyPressed;
-    private boolean isDownKeyPressed;
-    private boolean isSpaceKeyPressed;
+    public static boolean isRightKeyPressed;
+    public static boolean isLeftKeyPressed;
+    public static  boolean isUpKeyPressed;
+    public static boolean isDownKeyPressed;
+    public boolean isSpaceKeyPressed;
+    public long currentTime ;
 
     // Constructor
 
-    GameManager(){
+    public GameManager(){
         this.canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         this.graphicsContext = canvas.getGraphicsContext2D();
         Group root = new Group();
@@ -94,7 +98,7 @@ public class GameManager {
     public List<Entity> getStaticEntities() {
         return StaticEntities;
     }
-    //endregion
+    //end region
 
     public void createMap() throws FileNotFoundException {
         File file = new File("res/levels/Level1.txt");
@@ -137,28 +141,24 @@ public class GameManager {
                 int i = player.getY() / 32;
                 if(event.getCode() == KeyCode.RIGHT){
                     isRightKeyPressed = true;
-                    if(map[i][j+1] == 0) {
-                        player.moveRight();
-                        player.setImg(Sprite.player_right.getFxImage());
-                    }
+
+                        player.direction ="right";
+
                 } else if(event.getCode() == KeyCode.LEFT){
                     isLeftKeyPressed = true;
-                    if(map[i][j-1] == 0) {
-                        player.moveLeft();
-                        player.setImg(Sprite.player_left.getFxImage());
-                    }
+
+                        player.direction="left";
                 } else if(event.getCode() == KeyCode.DOWN){
                     isDownKeyPressed = true;
-                    if(map[i+1][j] == 0) {
-                        player.moveDown();
-                        player.setImg(Sprite.player_down.getFxImage());
-                    }
+
+                        player.direction = "down";
+
                 } else if(event.getCode() == KeyCode.UP){
                     isUpKeyPressed = true;
-                    if(map[i-1][j] == 0) {
-                        player.moveUp();
-                        player.setImg(Sprite.player_up.getFxImage());
-                    }
+
+                        player.direction="up";
+
+
                 } else if(event.getCode() == KeyCode.SPACE){
                     isSpaceKeyPressed = true;
                     StaticEntities.add(new Bomb(player.getX()/32, player.getY()/32, Sprite.bomb.getFxImage()));
@@ -171,12 +171,20 @@ public class GameManager {
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.RIGHT){
                     isRightKeyPressed = false;
+
+
                 } else if(event.getCode() == KeyCode.LEFT){
                     isLeftKeyPressed = false;
+
+
                 } else if(event.getCode() == KeyCode.DOWN){
                     isDownKeyPressed = false;
+
+
                 } else if(event.getCode() == KeyCode.UP){
                     isUpKeyPressed = false;
+
+
                 } else if(event.getCode() == KeyCode.SPACE){
                     isSpaceKeyPressed = false;
                 }
@@ -195,5 +203,19 @@ public class GameManager {
         StaticEntities.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
         player.render(graphicsContext);
+    }
+    public void start() throws FileNotFoundException {
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                System.out.println(l);
+                currentTime = l;
+                render();
+                update();
+                createKeyListeners();
+            }
+        };
+        timer.start();
+        createMap();
     }
 }

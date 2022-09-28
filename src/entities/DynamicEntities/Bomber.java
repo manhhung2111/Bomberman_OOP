@@ -1,74 +1,80 @@
 package entities.DynamicEntities;
 
-import entities.Entity;
+import entities.*;
 import graphics.Sprite;
 import javafx.scene.image.Image;
+import static Control.GameManager.*;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.Buffer;
 
-public class Bomber extends Entity {
+public class Bomber extends AnimatedEntity {
 
     public Bomber(int x, int y, Image img) {
+
         super( x, y, img);
     }
+    public boolean isRunning = true;
+    protected Sprite _sprite;
 
-    /*public void setDefaultValues() {
-        x = 100;
-        y= 100;
-        speed = 4;
-        direction = "right";
-    }*/
-    @Override
-    public void update() {
-        /*(switch(direction) {
-            case "up":
-                this.img = Sprite.player_up.getFxImage();
-                break;
-            case "down":
-                this.img = Sprite.player_down.getFxImage();
-                break;
-            case "right":
-                this.img = Sprite.player_right.getFxImage();
-                break;
-            case "left":
-                this.img = Sprite.player_left.getFxImage();
-        }*/
-    }
-    /*public void getBomberImage() {
-        try {
-            up = ImageIO.read(getClass().getResourceAsStream("res/sprites/player_up"));
-        }catch(IOException e) {
-            e.printStackTrace();
+    public void run() {
+        if(isRightKeyPressed == true || isLeftKeyPressed == true ||isUpKeyPressed == true || isDownKeyPressed ==true )
+        {
+            switch(direction) {
+                case "up":
+                    this.y -= Entity.jumpPixel;
+                    _sprite = Sprite.movingSprite(Sprite.player_up,Sprite.player_up_1,Sprite.player_up_2, _animate, 100);
+                    this.img = _sprite.getFxImage();
+                    break;
+                case "down":
+                    this.y += Entity.jumpPixel;
+                    _sprite = Sprite.movingSprite(Sprite.player_down,Sprite.player_down_1,Sprite.player_down_2, _animate, 100);
+                    this.img = _sprite.getFxImage();
+                    break;
+                case "right":
+                    this.x += Entity.jumpPixel;
+                    _sprite = Sprite.movingSprite(Sprite.player_right,Sprite.player_right_1,Sprite.player_right_2, _animate, 100);
+                    this.img = _sprite.getFxImage();
+                    break;
+                case "left":
+                    this.x -= 2;
+                    _sprite = Sprite.movingSprite(Sprite.player_left,Sprite.player_left_1,Sprite.player_left_2, _animate, 100);
+                    this.img = _sprite.getFxImage();
+                    break;
+                default:
+                    this.y = this.y;
+                    this.x = this.x;
+            }
         }
 
-    }*/
-    public void moveLeft() {
-        direction = "left";
+    }
+    public void moveLeft(){
         this.x -= Entity.jumpPixel;
+        _sprite = Sprite.movingSprite(Sprite.player_left,Sprite.player_left_1,Sprite.player_left_2, _animate, 60);
+        this.img = _sprite.getFxImage();
     }
-
-    public void moveRight(){
-        direction = "right";
+    public void moveRight() {
         this.x += Entity.jumpPixel;
+        _sprite = Sprite.movingSprite(Sprite.player_right,Sprite.player_right_1,Sprite.player_right_2, _animate, 60);
+        this.img = _sprite.getFxImage();
     }
-
     public void moveUp() {
-        direction = "up";
         this.y -= Entity.jumpPixel;
+        _sprite = Sprite.movingSprite(Sprite.player_up,Sprite.player_up_1,Sprite.player_up_2, _animate, 60);
+        this.img = _sprite.getFxImage();
     }
-
     public void moveDown() {
-        direction = "down";
         this.y += Entity.jumpPixel;
+        _sprite = Sprite.movingSprite(Sprite.player_down,Sprite.player_down_1,Sprite.player_down_2, _animate, 60);
+        this.img = _sprite.getFxImage();
     }
 
     public void stay(){
         this.y = this.y;
         this.x = this.x;
+    }
+    @Override
+    public void update() {
+        animate();
+        run();
     }
     /*public Image render(){
         Image player = null;
@@ -79,26 +85,5 @@ public class Bomber extends Entity {
         this.img = render();
     }*/
 
-    public boolean isCollide(Entity entity){
-        // Sides of player
-//        int left_player = this.x;
-//        int right_player = this.x + Sprite.DEFAULT_SIZE;
-//        int top_player = this.y;
-//        int bottom_player = this.y + Sprite.DEFAULT_SIZE;
-//
-//        // Sides of Static Entity
-//        int left_entity = entity.getX();
-//        int right_entity = entity.getX() + Sprite.DEFAULT_SIZE;
-//        int top_entity = entity.getY();
-//        int bottom_entity = entity.getY() + Sprite.DEFAULT_SIZE;
-//
-//        if(bottom_player <= top_entity) return false;
-//        if(top_player >= bottom_entity) return false;
-//        if(right_player <= left_entity) return false;
-//        if(left_player >= right_entity) return false;
 
-        Rectangle player_ = new Rectangle(x,y,10, Sprite.DEFAULT_SIZE);
-        Rectangle entity_ = new Rectangle(entity.getX(), entity.getY(),Sprite.DEFAULT_SIZE, Sprite.DEFAULT_SIZE);
-        return player_.intersects(entity_);
-    }
 }

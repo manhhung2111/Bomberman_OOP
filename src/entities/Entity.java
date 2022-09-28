@@ -7,7 +7,7 @@ import graphics.Sprite;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
-    public static final int jumpPixel = 32;
+    public static final int jumpPixel = 1;
     protected int x;
     protected int y;
 
@@ -15,8 +15,8 @@ public abstract class Entity {
 
     public int speed; //speed of entity
 
-    public String direction; //direction of player
-
+    public String direction = ""; //direction of player
+    public final int FPS =60;
     public int spriteCounter = 0;
     public int spriteNum = 1;
 
