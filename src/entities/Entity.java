@@ -13,10 +13,16 @@ public abstract class Entity {
 
     protected Image img;
 
-    public int speed; //speed of entity
+    public int speed = 2; //speed of entity
 
     public String direction = ""; //direction of player
+
     public final int FPS =60;
+
+    public int getFPS() {
+        return FPS;
+    }
+
     public int spriteCounter = 0;
     public int spriteNum = 1;
 

@@ -194,7 +194,8 @@ public class GameManager {
     }
 
     public void update() {
-        DynamicEntities.forEach(Entity::update);
+        //DynamicEntities.forEach(Entity::update);
+        //player.update();
         player.update();
     }
 
@@ -206,16 +207,29 @@ public class GameManager {
     }
     public void start() throws FileNotFoundException {
         AnimationTimer timer = new AnimationTimer() {
+            double drawInterval =1000000000/player.getFPS();
+            double delta = 0;
+            long lastTime = System.nanoTime();
+            long timer = 0;
+            int drawCount = 0;
             @Override
             public void handle(long l) {
-                System.out.println(l);
-                currentTime = l;
-                render();
-                update();
-                createKeyListeners();
+                //System.out.println(l);
+                isRunning = true;
+                delta += (l - lastTime) / drawInterval;
+                timer += (l -lastTime);
+                lastTime = l;
+                if(delta >= 1) {
+                    render();
+                    update();
+                    createKeyListeners();
+                    delta--;
+                }
             }
         };
         timer.start();
         createMap();
     }
+
 }
+
