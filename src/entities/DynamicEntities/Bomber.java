@@ -1,36 +1,65 @@
 package entities.DynamicEntities;
 
+
+import Control.GameManager;
 import entities.*;
 import graphics.Sprite;
 import javafx.scene.image.Image;
+
+import java.awt.*;
+
 import static Control.GameManager.*;
 
 
 public class Bomber extends Entity {
 
     public Bomber(int x, int y, Image img) {
-
         super( x, y, img);
+        solidArea = new Rectangle();
+        solidArea.x = 4;
+        solidArea.y =5;
+        solidArea.width = 16;
+        solidArea.height =24;
+
     }
-    public boolean isRunning = true;
     protected Sprite _sprite;
+
 
     public void run() {
         if(isUpKeyPressed ==true ||isDownKeyPressed == true || isRightKeyPressed == true || isLeftKeyPressed == true)
         {
             if(isUpKeyPressed == true) {
                 direction = "up";
-                y -= speed;
             } else if(isDownKeyPressed == true) {
                 direction = "down";
-                y += speed;
+
             }else if(isRightKeyPressed == true) {
                 direction = "right";
-                x += speed;
+
             }else if(isLeftKeyPressed) {
                 direction = "left";
-                x -= speed;
+
             }
+            collisionOn = false;
+            GameManager.checkTile(this);
+
+            if(collisionOn ==false) {
+                switch(direction){
+                    case "up":
+                        y -= speed;
+                        break;
+                    case "down":
+                        y += speed;
+                        break;
+                    case "right":
+                        x += speed;
+                        break;
+                    case "left":
+                        x -= speed;
+                        break;
+                }
+            }
+
             spriteCounter++;
             if(spriteCounter >10) {
                 if(spriteNum ==1) {
@@ -44,7 +73,6 @@ public class Bomber extends Entity {
             }
 
         }
-
     }
 
     public void playerImg(){
@@ -107,15 +135,11 @@ public class Bomber extends Entity {
             }
         }
 
-    public void stay(){
-        this.y = this.y;
-        this.x = this.x;
-    }
+
     @Override
     public void update() {
         playerImg();
         run();
-
     }
 
 }

@@ -1,6 +1,5 @@
 package Control;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import entities.*;
 import entities.DynamicEntities.Bomber;
 import entities.StaticEntities.Grass;
@@ -15,15 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 
-
-/*import javafx.animation.Animation;
-import javafx.application.Application;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
-import javafx.util.Duration;*/
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -33,7 +23,9 @@ import java.util.Scanner;
 public class GameManager {
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    private int[][] map = new int [HEIGHT][WIDTH];
+    public static final int tileSize = 32;
+
+    public static int[][] map = new int [HEIGHT][WIDTH];
     /**
      * -1: wall; 0: grass, 1: brick
      */
@@ -55,6 +47,8 @@ public class GameManager {
     public boolean isSpaceKeyPressed;
     public long currentTime ;
 
+    //public static CollisionChecker checkCollision = new CollisionChecker(this); //check collision for the whole game
+
     // Constructor
 
     public GameManager(){
@@ -74,11 +68,6 @@ public class GameManager {
     }
 
     //region Getter and Setter Methods
-
-    public int[][] getMap() {
-        return map;
-    }
-
     public GraphicsContext getGraphicsContext() {
         return graphicsContext;
     }
@@ -99,6 +88,7 @@ public class GameManager {
         return StaticEntities;
     }
     //end region
+
 
     public void createMap() throws FileNotFoundException {
         File file = new File("res/levels/Level1.txt");
@@ -133,12 +123,64 @@ public class GameManager {
         scanner.close();
     }
 
+    //check collision
+    public static void checkTile(Entity entity){
+
+        //pixel location
+        int entityLeftWorldX = entity.getX() + entity.solidArea.x;
+        int entityRightWorldX = entity.getX() + +entity.solidArea.x + entity.solidArea.width;
+        int entityTopWorldY = entity.getY() + entity.solidArea.y;
+        int entityBottomWorldY = entity.getY() + entity.solidArea.y + entity.solidArea.height;
+
+        //map location
+        int entityLeftCol  =entityLeftWorldX/tileSize;
+        int entityRightCol = entityRightWorldX/tileSize;
+        int entityTopRow = entityTopWorldY/tileSize;
+        int entityBottomRow = entityBottomWorldY/tileSize;
+
+        int tileNum1=0, tileNum2=0;
+        switch (entity.direction) {
+            case "up":
+                entityTopRow = (entityTopWorldY - entity.speed) / tileSize;
+                tileNum1 = map[entityTopRow][entityLeftCol];
+                tileNum2 = map[entityTopRow][entityRightCol];
+                if ( tileNum1 == -1 || tileNum2 == -1||tileNum1 == 1 ||  tileNum2 == 1) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "down":
+                entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
+                tileNum1 = map[entityBottomRow][entityLeftCol];
+                tileNum2 = map[entityBottomRow][entityRightCol];
+                if (tileNum1 == -1 || tileNum2 == -1||tileNum1 == 1 ||  tileNum2 == 1) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "left":
+                entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
+                tileNum1 = map[entityTopRow][entityLeftCol];
+                tileNum2 = map[entityBottomRow][entityLeftCol];
+                if ( tileNum1 == -1 || tileNum2 == -1||tileNum1 == 1 ||  tileNum2 == 1) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "right":
+                entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
+                tileNum1 = map[entityTopRow][entityRightCol];
+                tileNum2 = map[entityBottomRow][entityRightCol];
+                if ( tileNum1 == -1 ||  tileNum2 == -1||tileNum1 == 1 ||  tileNum2 == 1) {
+                    entity.collisionOn = true;
+                }
+                break;
+        }
+        //check pos
+        System.out.println("Tilenum1: " + tileNum1 +"\n" + "Tilenum2 :" + tileNum2);
+    }
+
     public void createKeyListeners() {
         this.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                int j = player.getX() / 32;
-                int i = player.getY() / 32;
                 if(event.getCode() == KeyCode.RIGHT){
                     isRightKeyPressed = true;
 
@@ -161,7 +203,7 @@ public class GameManager {
 
                 } else if(event.getCode() == KeyCode.SPACE){
                     isSpaceKeyPressed = true;
-                    StaticEntities.add(new Bomb(player.getX()/32, player.getY()/32, Sprite.bomb.getFxImage()));
+                    StaticEntities.add(new Bomb((player.getX()+tileSize/2)/32, (player.getY()+tileSize/2)/32, Sprite.bomb.getFxImage()));
                 }
             }
         });
@@ -188,14 +230,13 @@ public class GameManager {
                 } else if(event.getCode() == KeyCode.SPACE){
                     isSpaceKeyPressed = false;
                 }
-                player.stay();
+
             }
     });
     }
 
     public void update() {
         //DynamicEntities.forEach(Entity::update);
-        //player.update();
         player.update();
     }
 
@@ -204,6 +245,7 @@ public class GameManager {
         StaticEntities.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
         player.render(graphicsContext);
+
     }
     public void start() throws FileNotFoundException {
         AnimationTimer timer = new AnimationTimer() {

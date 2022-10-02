@@ -4,16 +4,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import graphics.Sprite;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
-    public static final int jumpPixel = 1;
     protected int x;
     protected int y;
 
     protected Image img;
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
 
-    public int speed = 2; //speed of entity
+    public static final int speed = 1; //speed of entity
 
     public String direction = ""; //direction of player
 
