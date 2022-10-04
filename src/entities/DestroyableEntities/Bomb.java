@@ -1,6 +1,7 @@
-package entities;
+package entities.DestroyableEntities;
 
 import Control.CheckCollision;
+import entities.Entity;
 import graphics.Sprite;
 import javafx.scene.image.Image;
 
@@ -33,86 +34,122 @@ public class Bomb extends Entity {
     }
 
     public void createExplosionEdge() {
-        if (!CheckCollision.bombBlockDown(this, 0)) {
-            explosionEdgeDown = new Bomb(this.getX() / tileSize, this.getY() / tileSize + 1
+        if (CheckCollision.bombBlockDown(this, 0) == GRASS) {
+            explosionEdgeDown = new Flame(this.getX() / tileSize, this.getY() / tileSize + 1
                     , Sprite.explosion_vertical_down_last2.getFxImage());
             if (flamePowerUp > 0) {
                 for (int i = 1; i <= flamePowerUp; i++) {
-                    if (!CheckCollision.bombBlockDown(this, i)) {
+                    if (CheckCollision.bombBlockDown(this, i) == GRASS) {
                         explosionEdgeDown.setY(explosionEdgeDown.getY() + tileSize);
                         middleExplosionDown++;
+                    } else if (CheckCollision.bombBlockDown(this, i) == BRICK) {
+                        int row = (explosionEdgeDown.getY() + tileSize) / tileSize;
+                        int col = explosionEdgeDown.getX() / tileSize;
+                        flameGrid[row][col] = FLAME;
+                        break;
                     } else break;
                 }
             }
             StaticEntities.add(explosionEdgeDown);
+        } else if (CheckCollision.bombBlockDown(this, 0) == BRICK) {
+            int row = (this.getY() + tileSize) / tileSize;
+            int col = this.getX() / tileSize;
+            flameGrid[row][col] = FLAME;
         }
 
 
-        if (!CheckCollision.bombBlockUp(this, 0)) {
-            explosionEdgeUp = new Bomb(this.getX() / tileSize, this.getY() / tileSize - 1
+        if (CheckCollision.bombBlockUp(this, 0) == GRASS) {
+            explosionEdgeUp = new Flame(this.getX() / tileSize, this.getY() / tileSize - 1
                     , Sprite.explosion_vertical_top_last2.getFxImage());
             if (flamePowerUp > 0) {
                 for (int i = 1; i <= flamePowerUp; i++) {
-                    if (!CheckCollision.bombBlockUp(this, i)) {
+                    if (CheckCollision.bombBlockUp(this, i) == GRASS) {
                         explosionEdgeUp.setY(explosionEdgeUp.getY() - tileSize);
                         middleExplosionUp++;
+                    } else if (CheckCollision.bombBlockUp(this, i) == BRICK) {
+                        int row = (explosionEdgeUp.getY() - tileSize) / tileSize;
+                        int col = explosionEdgeUp.getX() / tileSize;
+                        flameGrid[row][col] = FLAME;
+                        break;
                     } else break;
                 }
             }
             StaticEntities.add(explosionEdgeUp);
+        } else if (CheckCollision.bombBlockUp(this, 0) == BRICK) {
+            int row = (this.getY() - tileSize) / tileSize;
+            int col = this.getX() / tileSize;
+            flameGrid[row][col] = FLAME;
         }
 
-        if (!CheckCollision.bombBlockLeft(this, 0)) {
-            explosionEdgeLeft = new Bomb(this.getX() / tileSize - 1, this.getY() / tileSize
+        if (CheckCollision.bombBlockLeft(this, 0) == GRASS) {
+            explosionEdgeLeft = new Flame(this.getX() / tileSize - 1, this.getY() / tileSize
                     , Sprite.explosion_horizontal_left_last2.getFxImage());
             if (flamePowerUp > 0) {
                 for (int i = 1; i <= flamePowerUp; i++) {
-                    if (!CheckCollision.bombBlockLeft(this, i)) {
+                    if (CheckCollision.bombBlockLeft(this, i) == GRASS) {
                         explosionEdgeLeft.setX(explosionEdgeLeft.getX() - tileSize);
                         middleExplosionLeft++;
+                    } else if (CheckCollision.bombBlockLeft(this, i) == BRICK) {
+                        int row = explosionEdgeLeft.getY() / tileSize;
+                        int col = (explosionEdgeLeft.getX() - tileSize) / tileSize;
+                        flameGrid[row][col] = FLAME;
+                        break;
                     } else break;
                 }
             }
             StaticEntities.add(explosionEdgeLeft);
+        } else if (CheckCollision.bombBlockLeft(this, 0) == BRICK) {
+            int row = this.getY() / tileSize;
+            int col = (this.getX() - tileSize) / tileSize;
+            flameGrid[row][col] = FLAME;
         }
 
-        if (!CheckCollision.bombBlockRight(this, 0)) {
-            explosionEdgeRight = new Bomb(this.getX() / tileSize + 1, this.getY() / tileSize
+        if (CheckCollision.bombBlockRight(this, 0) == GRASS) {
+            explosionEdgeRight = new Flame(this.getX() / tileSize + 1, this.getY() / tileSize
                     , Sprite.explosion_horizontal_right_last2.getFxImage());
             if (flamePowerUp > 0) {
                 for (int i = 1; i <= flamePowerUp; i++) {
-                    if (!CheckCollision.bombBlockRight(this, i)) {
+                    if (CheckCollision.bombBlockRight(this, i) == GRASS) {
                         explosionEdgeRight.setX(explosionEdgeRight.getX() + tileSize);
                         middleExplosionRight++;
+                    } else if (CheckCollision.bombBlockRight(this, i) == BRICK) {
+                        int row = explosionEdgeRight.getY() / tileSize;
+                        int col = (explosionEdgeRight.getX() + tileSize) / tileSize;
+                        flameGrid[row][col] = FLAME;
+                        break;
                     } else break;
                 }
             }
             StaticEntities.add(explosionEdgeRight);
+        } else if (CheckCollision.bombBlockRight(this, 0) == BRICK) {
+            int row = this.getY() / tileSize;
+            int col = (this.getX() + tileSize) / tileSize;
+            flameGrid[row][col] = FLAME;
         }
     }
 
     public void createExplosionMiddle() {
         Entity middle;
         for (int i = 1; i <= middleExplosionDown; i++) {
-            middle = new Bomb(this.getX() / tileSize, this.getY() / tileSize + i
+            middle = new Flame(this.getX() / tileSize, this.getY() / tileSize + i
                     , Sprite.explosion_vertical2.getFxImage());
             middleVerticalExplosion.add(middle);
         }
 
         for (int i = 1; i <= middleExplosionUp; i++) {
-            middle = new Bomb(this.getX() / tileSize, this.getY() / tileSize - i
+            middle = new Flame(this.getX() / tileSize, this.getY() / tileSize - i
                     , Sprite.explosion_vertical2.getFxImage());
             middleVerticalExplosion.add(middle);
         }
 
         for (int i = 1; i <= middleExplosionLeft; i++) {
-            middle = new Bomb(this.getX() / tileSize - i, this.getY() / tileSize
+            middle = new Flame(this.getX() / tileSize - i, this.getY() / tileSize
                     , Sprite.explosion_horizontal2.getFxImage());
             middleHorizontalExplosion.add(middle);
         }
 
         for (int i = 1; i <= middleExplosionRight; i++) {
-            middle = new Bomb(this.getX() / tileSize + i, this.getY() / tileSize
+            middle = new Flame(this.getX() / tileSize + i, this.getY() / tileSize
                     , Sprite.explosion_horizontal2.getFxImage());
             middleHorizontalExplosion.add(middle);
         }
@@ -157,14 +194,23 @@ public class Bomb extends Entity {
         }
     }
 
+    public void destroyObjectsOnFlame(){
+        for(Entity entity : StaticEntities) {
+            if(entity instanceof Brick) {
+                int row = entity.getY() / tileSize;
+                int col = entity.getX() / tileSize;
+                if(flameGrid[row][col] == FLAME){
+                    ((Brick) entity).setDestroyed(true);
+                }
+            }
+        }
+    }
 
     public void removeAfterExplosion() {
         isExploded = false;
         flameGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
-        if (explosionEdgeDown != null) {
+        if (explosionEdgeDown != null)
             flameGrid[explosionEdgeDown.getY() / tileSize][explosionEdgeDown.getX() / tileSize] = GRASS;
-        }
-        flameGrid[explosionEdgeDown.getY() / tileSize][explosionEdgeDown.getX() / tileSize] = GRASS;
         if (explosionEdgeRight != null)
             flameGrid[explosionEdgeRight.getY() / tileSize][explosionEdgeRight.getX() / tileSize] = GRASS;
         if (explosionEdgeUp != null)
@@ -178,14 +224,14 @@ public class Bomb extends Entity {
             flameGrid[e.getY() / tileSize][e.getX() / tileSize] = GRASS;
         }
         BombList.remove(this);
-        StaticEntities.remove(explosionEdgeLeft);
-        StaticEntities.remove(explosionEdgeDown);
-        StaticEntities.remove(explosionEdgeUp);
-        StaticEntities.remove(explosionEdgeRight);
+        if(explosionEdgeLeft != null) StaticEntities.remove(explosionEdgeLeft);
+        if(explosionEdgeDown != null) StaticEntities.remove(explosionEdgeDown);
+        if(explosionEdgeUp != null) StaticEntities.remove(explosionEdgeUp);
+        if(explosionEdgeRight != null) StaticEntities.remove(explosionEdgeRight);
         StaticEntities.removeAll(middleVerticalExplosion);
         StaticEntities.removeAll(middleHorizontalExplosion);
-        middleVerticalExplosion.clear();
-        middleHorizontalExplosion.clear();
+        if(middleVerticalExplosion.size() > 0)middleVerticalExplosion.clear();
+        if(middleHorizontalExplosion.size() > 0) middleHorizontalExplosion.clear();
         isCreatedEdge = false;
         isCreatedMiddle = false;
         middleExplosionRight = 0;
@@ -204,6 +250,7 @@ public class Bomb extends Entity {
         } else {
             if (!isExploded) {
                 explode();
+                destroyObjectsOnFlame();
             }
             if (timeAfterExplosion > 0) {
                 timeAfterExplosion--;

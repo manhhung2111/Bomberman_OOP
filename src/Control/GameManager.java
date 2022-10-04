@@ -1,7 +1,7 @@
 package Control;
 
-import entities.Bomb;
-import entities.Brick;
+import entities.DestroyableEntities.Bomb;
+import entities.DestroyableEntities.Brick;
 import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import entities.StaticEntities.Grass;
@@ -172,6 +172,7 @@ public class GameManager {
     }
 
     public void update() {
+        StaticEntities.forEach(Entity::update);
         BombList.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);
     }

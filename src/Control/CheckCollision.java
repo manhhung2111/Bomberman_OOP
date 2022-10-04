@@ -4,24 +4,20 @@ import entities.Entity;
 
 import static Control.GameManager.*;
 public class CheckCollision {
-    public static boolean bombBlockDown(Entity entity, int flamePowerUp) {
-        int entityPosition = map[entity.getY() / tileSize + 1 + flamePowerUp][entity.getX() / tileSize];
-        return entityPosition == WALL || entityPosition == PORTAL;
+    public static int bombBlockDown(Entity entity, int flamePowerUp) {
+        return map[entity.getY() / tileSize + 1 + flamePowerUp][entity.getX() / tileSize];
     }
 
-    public static boolean bombBlockUp(Entity entity, int flamePowerUp) {
-        int entityPosition = map[entity.getY() / tileSize - 1 - flamePowerUp][entity.getX() / tileSize];
-        return entityPosition == WALL || entityPosition == PORTAL;
+    public static int bombBlockUp(Entity entity, int flamePowerUp) {
+        return map[entity.getY() / tileSize - 1 - flamePowerUp][entity.getX() / tileSize];
     }
 
-    public static boolean bombBlockLeft(Entity entity, int flamePowerUp) {
-        int entityPosition = map[entity.getY() / tileSize][entity.getX() / tileSize - 1 - flamePowerUp];
-        return entityPosition == WALL || entityPosition == PORTAL;
+    public static int bombBlockLeft(Entity entity, int flamePowerUp) {
+        return map[entity.getY() / tileSize][entity.getX() / tileSize - 1 - flamePowerUp];
     }
 
-    public static boolean bombBlockRight(Entity entity, int flamePowerUp) {
-        int entityPosition = map[entity.getY() / tileSize][entity.getX() / tileSize + 1 + flamePowerUp];
-        return entityPosition == WALL || entityPosition == PORTAL;
+    public static int bombBlockRight(Entity entity, int flamePowerUp) {
+        return map[entity.getY() / tileSize][entity.getX() / tileSize + 1 + flamePowerUp];
     }
 
     //check collision
