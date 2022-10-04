@@ -1,6 +1,7 @@
 package entities.DynamicEntities;
 
 
+import Control.CheckCollision;
 import Control.GameManager;
 import entities.*;
 import graphics.Sprite;
@@ -12,7 +13,7 @@ import static Control.GameManager.*;
 
 
 public class Bomber extends Entity {
-
+    public static int flamePowerUp = 0;
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
         solidArea = new Rectangle();
@@ -26,14 +27,14 @@ public class Bomber extends Entity {
 
 
     public void run() {
-        if(isUpKeyPressed ==true ||isDownKeyPressed == true || isRightKeyPressed == true || isLeftKeyPressed == true)
+        if(isUpKeyPressed || isDownKeyPressed || isRightKeyPressed || isLeftKeyPressed)
         {
-            if(isUpKeyPressed == true) {
+            if(isUpKeyPressed) {
                 direction = "up";
-            } else if(isDownKeyPressed == true) {
+            } else if(isDownKeyPressed) {
                 direction = "down";
 
-            }else if(isRightKeyPressed == true) {
+            }else if(isRightKeyPressed) {
                 direction = "right";
 
             }else if(isLeftKeyPressed) {
@@ -41,9 +42,9 @@ public class Bomber extends Entity {
 
             }
             collisionOn = false;
-            GameManager.checkTile(this);
+            CheckCollision.checkTile(this);
 
-            if(collisionOn ==false) {
+            if(!collisionOn) {
                 switch(direction){
                     case "up":
                         y -= speed;
