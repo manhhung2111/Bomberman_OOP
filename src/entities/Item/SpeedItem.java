@@ -1,7 +1,10 @@
 package entities.Item;
 
+import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import javafx.scene.image.Image;
+import static Control.GameManager.*;
+
 
 public class SpeedItem extends Item {
 
@@ -11,6 +14,9 @@ public class SpeedItem extends Item {
 
     @Override
     public void update() {
-
+        if (isEaten) {
+            Bomber.currentSpeed++;
+            StaticEntities.remove(this);
+        }
     }
 }

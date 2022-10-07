@@ -1,6 +1,7 @@
 package entities.DestroyableEntities;
 
 import Control.CheckCollision;
+import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import graphics.Sprite;
 import javafx.scene.image.Image;
@@ -192,6 +193,7 @@ public class Bomb extends Entity {
         for (Entity e : middleVerticalExplosion) {
             flameGrid[e.getY() / tileSize][e.getX() / tileSize] = FLAME;
         }
+        Bomber.currentBomb++;
     }
 
     public void destroyObjectsOnFlame(){

@@ -8,6 +8,7 @@ import entities.StaticEntities.Grass;
 import entities.StaticEntities.Wall;
 import graphics.Sprite;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -147,8 +148,13 @@ public class GameManager {
                     isUpKeyPressed = true;
                     player.direction = "up";
                 } else if (event.getCode() == KeyCode.SPACE) {
-                    isSpaceKeyPressed = true;
-                    BombList.add(new Bomb((player.getX() + tileSize / 2) / 32, (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage()));
+                    if(Bomber.currentBomb > 0){
+                        isSpaceKeyPressed = true;
+                        Bomb newBomb = new Bomb((player.getX() + tileSize / 2) / 32,
+                                (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage());
+                        BombList.add(newBomb);
+                        Bomber.currentBomb--;
+                    }
                 }
             }
         });
@@ -200,10 +206,19 @@ public class GameManager {
                     createKeyListeners();
                     delta--;
                 }
+                System.out.println(Bomber.currentBomb);
             }
         };
         timer.start();
         createMap();
+
+    }
+
+
+    public void stop() throws Exception {
+        System.out.println("STOP");
+        Platform.exit();
+        System.exit(0);
     }
 
 }

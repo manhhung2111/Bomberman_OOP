@@ -1,7 +1,10 @@
 package entities.Item;
 
+import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import javafx.scene.image.Image;
+
+import static Control.GameManager.StaticEntities;
 
 public class BombItem extends Item {
 
@@ -11,6 +14,10 @@ public class BombItem extends Item {
 
     @Override
     public void update() {
+        if(isEaten){
+            Bomber.currentBomb++;
+            StaticEntities.remove(this);
+        }
 
     }
 }

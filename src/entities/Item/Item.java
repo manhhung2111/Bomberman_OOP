@@ -4,7 +4,7 @@ import entities.Entity;
 import javafx.scene.image.Image;
 
 public class Item extends Entity {
-    private boolean isEaten = false;
+    protected boolean isEaten = false;
 
     public boolean isEaten() {
         return isEaten;

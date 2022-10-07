@@ -37,7 +37,7 @@ public class CheckCollision {
         int tileNum1 = 0, tileNum2 = 0;
         switch (entity.direction) {
             case "up":
-                entityTopRow = (entityTopWorldY - entity.speed) / tileSize;
+                entityTopRow = (entityTopWorldY - entity.initialSpeed) / tileSize;
                 tileNum1 = map[entityTopRow][entityLeftCol];
                 tileNum2 = map[entityTopRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -45,7 +45,7 @@ public class CheckCollision {
                 }
                 break;
             case "down":
-                entityBottomRow = (entityBottomWorldY + entity.speed) / tileSize;
+                entityBottomRow = (entityBottomWorldY + entity.initialSpeed) / tileSize;
                 tileNum1 = map[entityBottomRow][entityLeftCol];
                 tileNum2 = map[entityBottomRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -53,7 +53,7 @@ public class CheckCollision {
                 }
                 break;
             case "left":
-                entityLeftCol = (entityLeftWorldX - entity.speed) / tileSize;
+                entityLeftCol = (entityLeftWorldX - entity.initialSpeed) / tileSize;
                 tileNum1 = map[entityTopRow][entityLeftCol];
                 tileNum2 = map[entityBottomRow][entityLeftCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -61,7 +61,7 @@ public class CheckCollision {
                 }
                 break;
             case "right":
-                entityRightCol = (entityRightWorldX + entity.speed) / tileSize;
+                entityRightCol = (entityRightWorldX + entity.initialSpeed) / tileSize;
                 tileNum1 = map[entityTopRow][entityRightCol];
                 tileNum2 = map[entityBottomRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {

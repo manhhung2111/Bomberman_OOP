@@ -15,7 +15,7 @@ public abstract class Entity {
     public Rectangle solidArea;
     public boolean collisionOn = false;
 
-    public static final int speed = 1; //speed of entity
+    public int initialSpeed = 1; //speed of entity
 
     public String direction = ""; //direction of player
 
