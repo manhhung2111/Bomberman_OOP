@@ -31,6 +31,7 @@ public class Bomb extends Entity {
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+
     }
 
     public void createExplosionEdge() {
@@ -174,6 +175,7 @@ public class Bomb extends Entity {
 
     public void explode() {
         isExploded = true;
+
         if (!isCreatedEdge) createExplosionEdge();
         if (flamePowerUp > 0 && !isCreatedMiddle) createExplosionMiddle();
         this.setImg(Sprite.bomb_exploded2.getFxImage());

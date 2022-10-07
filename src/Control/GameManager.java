@@ -2,7 +2,9 @@ package Control;
 
 import entities.DestroyableEntities.Bomb;
 import entities.DestroyableEntities.Brick;
+import entities.DynamicEntities.Balloon;
 import entities.DynamicEntities.Bomber;
+import entities.DynamicEntities.Oneal;
 import entities.Entity;
 import entities.StaticEntities.Grass;
 import entities.StaticEntities.Wall;
@@ -32,6 +34,8 @@ public class GameManager {
     public static final int SPEEDITEM = 6;
     public static final int FLAMEITEM = 7;
     public static final int BOMB = 8;
+    public static final int BALLOON = -1;
+    public static final int ONEAL = -2;
     public static final int FLAME = 9;
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
@@ -45,10 +49,13 @@ public class GameManager {
     private Scene scene;
 
     public static List<Entity> DynamicEntities = new ArrayList<>();
+
+    public static List<Entity> enemyEntities = new ArrayList<>();
     public static List<Entity> StaticEntities = new ArrayList<>();
     public static List<Entity> BombList = new ArrayList<>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
+
 
     // Key listeners
     public static boolean isRightKeyPressed;
@@ -87,6 +94,8 @@ public class GameManager {
         return scene;
     }
 
+    public List<Entity> getEnemyEntities(){return enemyEntities;}
+
     public List<Entity> getDynamicEntities() {
         return DynamicEntities;
     }
@@ -112,6 +121,8 @@ public class GameManager {
         for (String s : line) {
             for (int j = 0; j < s.length(); j++) {
                 Entity object;
+                Entity balloon;
+                Entity oneal;
                 char c = s.charAt(j);
                 if (c == '#') {
                     map[i][j] = WALL;
@@ -124,6 +135,15 @@ public class GameManager {
                     object = new Grass(j, i, Sprite.grass.getFxImage());
                 }
                 StaticEntities.add(object);
+                if(c == '1') {
+                    balloon = new Balloon(j, i, Sprite.balloom_left3.getFxImage());
+                    enemyEntities.add(balloon);
+                }
+                else if(c == '2'){
+                    oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage());
+                    enemyEntities.add(oneal);
+                }
+
             }
             i++;
         }
@@ -175,6 +195,7 @@ public class GameManager {
         StaticEntities.forEach(Entity::update);
         BombList.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);
+        enemyEntities.forEach(Entity::update);
     }
 
     public void render() {
@@ -182,6 +203,7 @@ public class GameManager {
         StaticEntities.forEach(g -> g.render(graphicsContext));
         BombList.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
+        enemyEntities.forEach(g -> g.render(graphicsContext));
     }
 
     public void start() throws FileNotFoundException {

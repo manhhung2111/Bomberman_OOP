@@ -14,8 +14,9 @@ public abstract class Entity {
     protected Image img;
     public Rectangle solidArea;
     public boolean collisionOn = false;
+    public boolean collisionEnemy = false;
 
-    public static final int speed = 1; //speed of entity
+    public int speed = 1; //speed of entity
 
     public String direction = ""; //direction of player
 
@@ -26,6 +27,9 @@ public abstract class Entity {
     }
 
     public int spriteCounter = 0;
+
+    public int dir = 1;
+    public int solidAreaDefaultX, solidAreaDefaultY; //Want to change the x and y value
     public int spriteNum = 1;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas

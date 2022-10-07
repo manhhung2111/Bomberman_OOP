@@ -19,6 +19,8 @@ public class Bomber extends Entity {
         solidArea = new Rectangle();
         solidArea.x = 4;
         solidArea.y =5;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
         solidArea.width = 16;
         solidArea.height =24;
 
@@ -42,10 +44,11 @@ public class Bomber extends Entity {
 
             }
             collisionOn = false;
+
             CheckCollision.checkTile(this);
 
             if(!collisionOn) {
-                switch(direction){
+                switch (direction) {
                     case "up":
                         y -= speed;
                         break;
@@ -73,6 +76,11 @@ public class Bomber extends Entity {
                 spriteCounter =0;
             }
 
+        }
+        collisionEnemy = false;
+        CheckCollision.checkCollisionEntity(this, GameManager.enemyEntities);
+        if(collisionEnemy) {
+            direction = "dead";
         }
     }
 
@@ -120,7 +128,7 @@ public class Bomber extends Entity {
                         this.img = _sprite.getFxImage();
                     }
                     break;
-                default:
+                case "right":
                     if (spriteNum == 1) {
                         _sprite = Sprite.player_right;
                         this.img = _sprite.getFxImage();
@@ -133,6 +141,21 @@ public class Bomber extends Entity {
                         _sprite = Sprite.player_right_2;
                         this.img = _sprite.getFxImage();
                     }
+                    break;
+                case "dead":
+                    if (spriteNum == 1) {
+                        _sprite = Sprite.player_dead1;
+                        this.img = _sprite.getFxImage();
+                    }
+                    if (spriteNum == 2) {
+                        _sprite = Sprite.player_dead2;
+                        this.img = _sprite.getFxImage();
+                    }
+                    if (spriteNum == 3) {
+                        _sprite = Sprite.player_dead3;
+                        this.img = _sprite.getFxImage();
+                    }
+                    break;
             }
         }
 

@@ -2,6 +2,8 @@ package Control;
 
 import entities.Entity;
 
+import java.util.List;
+
 import static Control.GameManager.*;
 public class CheckCollision {
     public static int bombBlockDown(Entity entity, int flamePowerUp) {
@@ -68,6 +70,38 @@ public class CheckCollision {
                     entity.collisionOn = true;
                 }
                 break;
+        }
+    }
+
+    public static void checkCollisionEntity(Entity entity1, List<Entity> enemy) {
+        for(int i = 0; i < enemy.size(); i++) {
+            entity1.solidArea.x = entity1.getX() + entity1 .solidArea.x;
+            entity1.solidArea.y = entity1.getY() + entity1.solidArea.y;
+            enemy.get(i).solidArea.x = enemy.get(i).getX() + enemy.get(i).solidArea.x;
+            enemy.get(i).solidArea.y = enemy.get(i).getY() + enemy.get(i).solidArea.y;
+
+            switch(entity1.direction) {
+                case "up":
+                    entity1.solidArea.y -= entity1.speed;
+                    break;
+                case "down":
+                    entity1.solidArea.y += entity1.speed;
+                    break;
+                case "left":
+                    entity1.solidArea.x -= entity1.speed;
+                    break;
+                case "right":
+                    entity1.solidArea.x += entity1.speed;
+                    break;
+            }
+            if(entity1.solidArea.intersects(enemy.get(i).solidArea)){
+                entity1.collisionEnemy = true;
+            }
+
+            entity1.solidArea.x = entity1.solidAreaDefaultX;
+            entity1.solidArea.y = entity1.solidAreaDefaultY;
+            enemy.get(i).solidArea.x = enemy.get(i).solidAreaDefaultX;
+            enemy.get(i).solidArea.y = enemy.get(i).solidAreaDefaultY;
         }
     }
 }
