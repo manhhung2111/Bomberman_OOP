@@ -2,6 +2,7 @@ package entities.DynamicEntities;
 
 
 import Control.CheckCollision;
+import Control.GameManager;
 import entities.Entity;
 import entities.Item.BombItem;
 import entities.Item.FlameItem;
@@ -25,18 +26,22 @@ public class Bomber extends Entity {
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
-        solidArea = new Rectangle();
+        solidArea = new Rectangle(4, 5, 16, 24);
         solidArea.x = 4;
         solidArea.y = 5;
         solidArea.width = 16;
         solidArea.height = 24;
         isAlive = true;
-        currentSpeed = initialSpeed;
+        currentSpeed = speed;
         currentBomb = 1;
     }
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 
     public void run() {
@@ -86,6 +91,7 @@ public class Bomber extends Entity {
             }
 
         }
+        CheckCollision.checkCollisionEnemy(this, GameManager.enemyEntities);
     }
 
     public void playerAnimation() {

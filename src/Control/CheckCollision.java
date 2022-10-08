@@ -1,6 +1,9 @@
 package Control;
 
+import entities.DynamicEntities.Bomber;
 import entities.Entity;
+
+import java.util.List;
 
 import static Control.GameManager.*;
 public class CheckCollision {
@@ -37,7 +40,7 @@ public class CheckCollision {
         int tileNum1 = 0, tileNum2 = 0;
         switch (entity.direction) {
             case "up":
-                entityTopRow = (entityTopWorldY - entity.initialSpeed) / tileSize;
+                entityTopRow = (entityTopWorldY - entity.getSpeed()) / tileSize;
                 tileNum1 = map[entityTopRow][entityLeftCol];
                 tileNum2 = map[entityTopRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -45,7 +48,7 @@ public class CheckCollision {
                 }
                 break;
             case "down":
-                entityBottomRow = (entityBottomWorldY + entity.initialSpeed) / tileSize;
+                entityBottomRow = (entityBottomWorldY + entity.getSpeed()) / tileSize;
                 tileNum1 = map[entityBottomRow][entityLeftCol];
                 tileNum2 = map[entityBottomRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -53,7 +56,7 @@ public class CheckCollision {
                 }
                 break;
             case "left":
-                entityLeftCol = (entityLeftWorldX - entity.initialSpeed) / tileSize;
+                entityLeftCol = (entityLeftWorldX - entity.getSpeed()) / tileSize;
                 tileNum1 = map[entityTopRow][entityLeftCol];
                 tileNum2 = map[entityBottomRow][entityLeftCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
@@ -61,13 +64,46 @@ public class CheckCollision {
                 }
                 break;
             case "right":
-                entityRightCol = (entityRightWorldX + entity.initialSpeed) / tileSize;
+                entityRightCol = (entityRightWorldX + entity.getSpeed()) / tileSize;
                 tileNum1 = map[entityTopRow][entityRightCol];
                 tileNum2 = map[entityBottomRow][entityRightCol];
                 if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
                     entity.collisionOn = true;
                 }
                 break;
+        }
+    }
+
+    public static void checkCollisionEnemy(Entity entity1, List<Entity> enemy) {
+        for(int i = 0; i < enemy.size(); i++) {
+            entity1.solidArea.x = entity1.getX() + entity1 .solidArea.x;
+            entity1.solidArea.y = entity1.getY() + entity1.solidArea.y;
+            enemy.get(i).solidArea.x = enemy.get(i).getX() + enemy.get(i).solidArea.x;
+            enemy.get(i).solidArea.y = enemy.get(i).getY() + enemy.get(i).solidArea.y;
+
+            switch(entity1.direction) {
+                case "up":
+                    entity1.solidArea.y -= entity1.getSpeed();
+                    break;
+                case "down":
+                    entity1.solidArea.y += entity1.getSpeed();
+                    break;
+                case "left":
+                    entity1.solidArea.x -= entity1.getSpeed();
+                    break;
+                case "right":
+                    entity1.solidArea.x += entity1.getSpeed();
+                    break;
+            }
+            if(entity1.solidArea.intersects(enemy.get(i).solidArea)){
+                if(entity1 instanceof Bomber){
+                    ((Bomber) entity1).setAlive(false);
+                }
+            }
+            entity1.solidArea.x = entity1.solidAreaDefaultX;
+            entity1.solidArea.y = entity1.solidAreaDefaultY;
+            enemy.get(i).solidArea.x = enemy.get(i).solidAreaDefaultX;
+            enemy.get(i).solidArea.y = enemy.get(i).solidAreaDefaultY;
         }
     }
 }
