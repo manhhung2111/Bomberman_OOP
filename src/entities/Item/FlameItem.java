@@ -17,6 +17,7 @@ public class FlameItem extends Item {
         if(isEaten) {
             Bomber.flamePowerUp++;
             StaticEntities.remove(this);
+            isEaten = false;
         }
     }
 }

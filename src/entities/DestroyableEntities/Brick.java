@@ -1,6 +1,9 @@
 package entities.DestroyableEntities;
 
 import entities.Entity;
+import entities.Item.BombItem;
+import entities.Item.FlameItem;
+import entities.Item.SpeedItem;
 import graphics.Sprite;
 import javafx.scene.image.Image;
 import static Control.GameManager.*;
@@ -34,9 +37,23 @@ public class Brick extends Entity {
                 this.setImg(Sprite.brick_exploded2.getFxImage());
                 timeAfterExplosion--;
             } else {
-                map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
-                StaticEntities.add(new Grass(this.getX() / 32, this.getY() / 32, Sprite.grass.getFxImage()));
+                int x = this.getX();
+                int y = this.getY();
                 StaticEntities.remove(this);
+                for(Entity e : StaticEntities){
+                    if(x == e.getX() && y == e.getY()){
+                        if(e instanceof SpeedItem){
+                            map[y / tileSize][x / tileSize] = SPEEDITEM;
+                        }else if (e instanceof BombItem){
+                            map[y / tileSize][x / tileSize] = BOMBITEM;
+                        } else if (e instanceof FlameItem){
+                            map[y / tileSize][x / tileSize] = FLAMEITEM;
+                        } else{
+                            map[y / tileSize][x / tileSize] = GRASS;
+                        }
+                    }
+                }
+                isDestroyed = false;
             }
         }
     }

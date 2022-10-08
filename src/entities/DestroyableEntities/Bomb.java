@@ -225,6 +225,20 @@ public class Bomb extends Entity {
         for (Entity e : middleVerticalExplosion) {
             flameGrid[e.getY() / tileSize][e.getX() / tileSize] = GRASS;
         }
+        for(int i = -(1 + flamePowerUp); i <= (1 + flamePowerUp); i++){
+            int row = this.getY() / tileSize + i;
+            int col = this.getX() / tileSize;
+            if(row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH){
+                flameGrid[row][col] = GRASS;
+            }
+        }
+        for(int i = -(1 + flamePowerUp); i <= (1 + flamePowerUp); i++){
+            int row = this.getY() / tileSize;
+            int col = this.getX() / tileSize + i;
+            if(row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH){
+                flameGrid[row][col] = GRASS;
+            }
+        }
         BombList.remove(this);
         if(explosionEdgeLeft != null) StaticEntities.remove(explosionEdgeLeft);
         if(explosionEdgeDown != null) StaticEntities.remove(explosionEdgeDown);
@@ -252,10 +266,10 @@ public class Bomb extends Entity {
         } else {
             if (!isExploded) {
                 explode();
-                destroyObjectsOnFlame();
             }
             if (timeAfterExplosion > 0) {
                 timeAfterExplosion--;
+                destroyObjectsOnFlame();
             } else {
                 removeAfterExplosion();
             }

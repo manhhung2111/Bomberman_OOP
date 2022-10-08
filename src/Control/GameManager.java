@@ -4,6 +4,9 @@ import entities.DestroyableEntities.Bomb;
 import entities.DestroyableEntities.Brick;
 import entities.DynamicEntities.Bomber;
 import entities.Entity;
+import entities.Item.BombItem;
+import entities.Item.FlameItem;
+import entities.Item.SpeedItem;
 import entities.StaticEntities.Grass;
 import entities.StaticEntities.Wall;
 import graphics.Sprite;
@@ -114,13 +117,29 @@ public class GameManager {
             for (int j = 0; j < s.length(); j++) {
                 Entity object;
                 char c = s.charAt(j);
-                if (c == '#') {
+                if (c == '2') {
                     map[i][j] = WALL;
                     object = new Wall(j, i, Sprite.wall.getFxImage());
-                } else if (c == '*') {
+                } else if (c == '3') {
                     map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     object = new Brick(j, i, Sprite.brick.getFxImage());
-                } else {
+                } else if(c == '5'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                } else if(c == '6'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new SpeedItem(j, i, Sprite.powerup_speed.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                }else if(c == '7'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new FlameItem(j, i, Sprite.powerup_flames.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                }else{
                     map[i][j] = GRASS;
                     object = new Grass(j, i, Sprite.grass.getFxImage());
                 }
@@ -206,7 +225,6 @@ public class GameManager {
                     createKeyListeners();
                     delta--;
                 }
-                System.out.println(Bomber.currentBomb);
             }
         };
         timer.start();

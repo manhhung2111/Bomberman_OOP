@@ -17,6 +17,7 @@ public class SpeedItem extends Item {
         if (isEaten) {
             Bomber.currentSpeed++;
             StaticEntities.remove(this);
+            isEaten = false;
         }
     }
 }

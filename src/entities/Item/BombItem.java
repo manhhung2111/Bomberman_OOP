@@ -17,6 +17,7 @@ public class BombItem extends Item {
         if(isEaten){
             Bomber.currentBomb++;
             StaticEntities.remove(this);
+            isEaten = false;
         }
 
     }
