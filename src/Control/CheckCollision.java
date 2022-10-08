@@ -73,7 +73,7 @@ public class CheckCollision {
         }
     }
 
-    public static void checkCollisionEntity(Entity entity1, List<Entity> enemy) {
+    public static void checkCollisionEnemy(Entity entity1, List<Entity> enemy) {
         for(int i = 0; i < enemy.size(); i++) {
             entity1.solidArea.x = entity1.getX() + entity1 .solidArea.x;
             entity1.solidArea.y = entity1.getY() + entity1.solidArea.y;

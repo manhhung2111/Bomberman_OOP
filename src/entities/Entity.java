@@ -16,7 +16,7 @@ public abstract class Entity {
     public boolean collisionOn = false;
     public boolean collisionEnemy = false;
 
-    public int speed = 1; //speed of entity
+    public int speed = 2; //speed of entity
 
     public String direction = ""; //direction of player
 

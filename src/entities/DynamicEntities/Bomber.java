@@ -14,6 +14,7 @@ import static Control.GameManager.*;
 
 public class Bomber extends Entity {
     public static int flamePowerUp = 0;
+    private int timeAfterDeath = 60;
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
         solidArea = new Rectangle();
@@ -78,7 +79,7 @@ public class Bomber extends Entity {
 
         }
         collisionEnemy = false;
-        CheckCollision.checkCollisionEntity(this, GameManager.enemyEntities);
+        CheckCollision.checkCollisionEnemy(this, GameManager.enemyEntities);
         if(collisionEnemy) {
             direction = "dead";
         }
@@ -143,18 +144,25 @@ public class Bomber extends Entity {
                     }
                     break;
                 case "dead":
-                    if (spriteNum == 1) {
+                    if (timeAfterDeath >= 40) {
                         _sprite = Sprite.player_dead1;
                         this.img = _sprite.getFxImage();
+                        timeAfterDeath--;
                     }
-                    if (spriteNum == 2) {
+                    else if (timeAfterDeath >=20) {
                         _sprite = Sprite.player_dead2;
                         this.img = _sprite.getFxImage();
+                        timeAfterDeath--;
                     }
-                    if (spriteNum == 3) {
+                    else if (timeAfterDeath >= 0) {
                         _sprite = Sprite.player_dead3;
                         this.img = _sprite.getFxImage();
+                        timeAfterDeath--;
+
+                    }else {
+                        DynamicEntities.remove(this);
                     }
+
                     break;
             }
         }
