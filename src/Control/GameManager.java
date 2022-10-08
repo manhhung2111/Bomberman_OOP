@@ -6,10 +6,14 @@ import entities.DynamicEntities.Balloon;
 import entities.DynamicEntities.Bomber;
 import entities.DynamicEntities.Oneal;
 import entities.Entity;
+import entities.Item.BombItem;
+import entities.Item.FlameItem;
+import entities.Item.SpeedItem;
 import entities.StaticEntities.Grass;
 import entities.StaticEntities.Wall;
 import graphics.Sprite;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -33,10 +37,11 @@ public class GameManager {
     public static final int BOMBITEM = 5;
     public static final int SPEEDITEM = 6;
     public static final int FLAMEITEM = 7;
+
     public static final int BOMB = 8;
-    public static final int BALLOON = -1;
-    public static final int ONEAL = -2;
     public static final int FLAME = 9;
+    public static final char BALLOON = '#';
+    public static final int ONEAL = '*';
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
     public static final int tileSize = 32;
@@ -49,13 +54,11 @@ public class GameManager {
     private Scene scene;
 
     public static List<Entity> DynamicEntities = new ArrayList<>();
-
-    public static List<Entity> enemyEntities = new ArrayList<>();
     public static List<Entity> StaticEntities = new ArrayList<>();
     public static List<Entity> BombList = new ArrayList<>();
+    public static List<Entity> enemyEntities = new ArrayList<>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
-
 
     // Key listeners
     public static boolean isRightKeyPressed;
@@ -94,8 +97,6 @@ public class GameManager {
         return scene;
     }
 
-    public List<Entity> getEnemyEntities(){return enemyEntities;}
-
     public List<Entity> getDynamicEntities() {
         return DynamicEntities;
     }
@@ -121,27 +122,44 @@ public class GameManager {
         for (String s : line) {
             for (int j = 0; j < s.length(); j++) {
                 Entity object;
-                Entity balloon;
-                Entity oneal;
                 char c = s.charAt(j);
-                if (c == '#') {
+                if (c == '2') {
                     map[i][j] = WALL;
                     object = new Wall(j, i, Sprite.wall.getFxImage());
-                } else if (c == '*') {
+                    StaticEntities.add(object);
+                } else if (c == '3') {
                     map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     object = new Brick(j, i, Sprite.brick.getFxImage());
-                } else {
+                    StaticEntities.add(object);
+                } else if(c == '5'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                    StaticEntities.add(object);
+                } else if(c == '6'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new SpeedItem(j, i, Sprite.powerup_speed.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                    StaticEntities.add(object);
+                }else if(c == '7'){
+                    map[i][j] = BRICK;
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    StaticEntities.add(new FlameItem(j, i, Sprite.powerup_flames.getFxImage()));
+                    object = new Brick(j, i, Sprite.brick.getFxImage());
+                    StaticEntities.add(object);
+                } else if(c == '#'){
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    enemyEntities.add(new Balloon(j, i, Sprite.balloom_left3.getFxImage()));
+                }else if(c == '*'){
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    enemyEntities.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
+                } else{
                     map[i][j] = GRASS;
                     object = new Grass(j, i, Sprite.grass.getFxImage());
-                }
-                StaticEntities.add(object);
-                if(c == '1') {
-                    balloon = new Balloon(j, i, Sprite.balloom_left3.getFxImage());
-                    enemyEntities.add(balloon);
-                }
-                else if(c == '2'){
-                    oneal = new Oneal(j, i, Sprite.oneal_right1.getFxImage());
-                    enemyEntities.add(oneal);
+                    StaticEntities.add(object);
                 }
 
             }
@@ -167,8 +185,13 @@ public class GameManager {
                     isUpKeyPressed = true;
                     player.direction = "up";
                 } else if (event.getCode() == KeyCode.SPACE) {
-                    isSpaceKeyPressed = true;
-                    BombList.add(new Bomb((player.getX() + tileSize / 2) / 32, (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage()));
+                    if(Bomber.currentBomb > 0){
+                        isSpaceKeyPressed = true;
+                        Bomb newBomb = new Bomb((player.getX() + tileSize / 2) / 32,
+                                (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage());
+                        BombList.add(newBomb);
+                        Bomber.currentBomb--;
+                    }
                 }
             }
         });
@@ -193,17 +216,17 @@ public class GameManager {
 
     public void update() {
         StaticEntities.forEach(Entity::update);
+        enemyEntities.forEach(Entity::update);
         BombList.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);
-        enemyEntities.forEach(Entity::update);
     }
 
     public void render() {
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         StaticEntities.forEach(g -> g.render(graphicsContext));
+        enemyEntities.forEach(g -> g.render(graphicsContext));
         BombList.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
-        enemyEntities.forEach(g -> g.render(graphicsContext));
     }
 
     public void start() throws FileNotFoundException {
@@ -226,6 +249,13 @@ public class GameManager {
         };
         timer.start();
         createMap();
+    }
+
+
+    public void stop() throws Exception {
+        System.out.println("STOP");
+        Platform.exit();
+        System.exit(0);
     }
 
 }

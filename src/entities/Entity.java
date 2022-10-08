@@ -14,22 +14,14 @@ public abstract class Entity {
     protected Image img;
     public Rectangle solidArea;
     public boolean collisionOn = false;
-    public boolean collisionEnemy = false;
-
-    public int speed = 2; //speed of entity
+    protected int speed = 1; //speed of entity
+    public int solidAreaDefaultX, solidAreaDefaultY;
 
     public String direction = ""; //direction of player
 
-    public final int FPS =60;
-
-    public int getFPS() {
-        return FPS;
-    }
+    public static final int FPS =60;
 
     public int spriteCounter = 0;
-
-    public int dir = 1;
-    public int solidAreaDefaultX, solidAreaDefaultY; //Want to change the x and y value
     public int spriteNum = 1;
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
@@ -39,11 +31,17 @@ public abstract class Entity {
         this.img = img;
     }
 
-    public void render(GraphicsContext gc) {
-        gc.drawImage(img, x, y);
+    //region Getter and Setter Methods
+    public int getFPS() {
+        return FPS;
     }
-    public abstract void update();
+    public int getSpeed() {
+        return speed;
+    }
 
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
     public int getX() {
         return x;
     }
@@ -67,4 +65,10 @@ public abstract class Entity {
     public void setImg(Image img) {
         this.img = img;
     }
+    //endregion
+
+    public void render(GraphicsContext gc) {
+        gc.drawImage(img, x, y);
+    }
+    public abstract void update();
 }

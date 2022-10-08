@@ -1,6 +1,7 @@
 import Control.GameManager;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 
@@ -14,7 +15,7 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
+    public void start(Stage stage) throws Exception {
         gameManager = new GameManager();
         stage.setTitle("Bomber man");
         stage.setScene(gameManager.getScene());
