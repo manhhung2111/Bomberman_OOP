@@ -58,6 +58,7 @@ public class GameManager {
     public static List<Entity> BombList = new ArrayList<>();
     public static List<Entity> enemyEntities = new ArrayList<>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
+    public static int[][] bombGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
 
     // Key listeners
@@ -189,6 +190,7 @@ public class GameManager {
                         isSpaceKeyPressed = true;
                         Bomb newBomb = new Bomb((player.getX() + tileSize / 2) / 32,
                                 (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage());
+                        bombGrid[newBomb.getY()/tileSize][newBomb.getX()/tileSize] = BOMB;
                         BombList.add(newBomb);
                         Bomber.currentBomb--;
                     }
@@ -216,16 +218,16 @@ public class GameManager {
 
     public void update() {
         StaticEntities.forEach(Entity::update);
-        enemyEntities.forEach(Entity::update);
         BombList.forEach(Entity::update);
+        enemyEntities.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);
     }
 
     public void render() {
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         StaticEntities.forEach(g -> g.render(graphicsContext));
-        enemyEntities.forEach(g -> g.render(graphicsContext));
         BombList.forEach(g -> g.render(graphicsContext));
+        enemyEntities.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
     }
 

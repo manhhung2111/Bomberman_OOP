@@ -6,6 +6,7 @@ import entities.Entity;
 import graphics.Sprite;
 import javafx.scene.image.Image;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Bomb extends Entity {
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+        solidArea = new Rectangle(2, 4, 32, 30);
 
     }
 
@@ -213,6 +215,7 @@ public class Bomb extends Entity {
     public void removeAfterExplosion() {
         isExploded = false;
         flameGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
+        bombGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
         if (explosionEdgeDown != null)
             flameGrid[explosionEdgeDown.getY() / tileSize][explosionEdgeDown.getX() / tileSize] = GRASS;
         if (explosionEdgeRight != null)
