@@ -2,9 +2,8 @@ package Control;
 
 import entities.DestroyableEntities.Bomb;
 import entities.DestroyableEntities.Brick;
-import entities.DynamicEntities.Balloon;
-import entities.DynamicEntities.Bomber;
-import entities.DynamicEntities.Oneal;
+import entities.DynamicEntities.*;
+
 import entities.Entity;
 import entities.Item.BombItem;
 import entities.Item.FlameItem;
@@ -47,6 +46,7 @@ public class GameManager {
     public static final int tileSize = 32;
 
     public static int[][] map = new int[HEIGHT][WIDTH];
+    public static int[][] bombGrid = new int[HEIGHT][WIDTH];
     public boolean isRunning = true;
     private GraphicsContext graphicsContext;
     private Canvas canvas;
@@ -58,7 +58,6 @@ public class GameManager {
     public static List<Entity> BombList = new ArrayList<>();
     public static List<Entity> enemyEntities = new ArrayList<>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
-    public static int[][] bombGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
 
     // Key listeners
@@ -157,6 +156,9 @@ public class GameManager {
                 }else if(c == '*'){
                     StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     enemyEntities.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
+                }else if(c == '@'){
+                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    enemyEntities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
                 } else{
                     map[i][j] = GRASS;
                     object = new Grass(j, i, Sprite.grass.getFxImage());
@@ -217,7 +219,10 @@ public class GameManager {
     }
 
     public void update() {
-        StaticEntities.forEach(Entity::update);
+        for(Entity e : StaticEntities){
+            if(e instanceof SpeedItem) ((SpeedItem) e ).update(player);
+            else e.update();
+        }
         BombList.forEach(Entity::update);
         enemyEntities.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);

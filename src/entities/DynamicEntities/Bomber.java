@@ -17,7 +17,6 @@ import static Control.GameManager.*;
 
 public class Bomber extends Entity {
     public static int flamePowerUp = 0;
-    public static double currentSpeed;
     public static int currentBomb;
     protected Sprite _sprite;
     private boolean isAlive;
@@ -32,7 +31,6 @@ public class Bomber extends Entity {
         solidAreaDefaultY = solidArea.y;
         isInside = true;
         isAlive = true;
-        currentSpeed = speed;
         currentBomb = 1;
     }
 
@@ -50,35 +48,33 @@ public class Bomber extends Entity {
                 direction = "up";
             } else if (isDownKeyPressed) {
                 direction = "down";
-
             } else if (isRightKeyPressed) {
                 direction = "right";
-
             } else if (isLeftKeyPressed) {
                 direction = "left";
-
             }
             collisionOn = false;
-            CheckCollision.checkTile(this);
             collisionBomb = false;
-            isInside = true;
+            CheckCollision.checkTile(this);
             checkInsideBomb();
             if(!isInside) {
                 CheckCollision.checkCollisionBomb(this);
+                isInside = true;
             }
+            System.out.println(isInside + " " + collisionOn + " " + collisionBomb);
             if (!collisionOn && !collisionBomb) {
                 switch (direction) {
                     case "up":
-                        y -= currentSpeed;
+                        y -= speed;
                         break;
                     case "down":
-                        y += currentSpeed;
+                        y += speed;
                         break;
                     case "right":
-                        x += currentSpeed;
+                        x += speed;
                         break;
                     case "left":
-                        x -= currentSpeed;
+                        x -= speed;
                         break;
                 }
             }
@@ -94,9 +90,11 @@ public class Bomber extends Entity {
                 }
                 spriteCounter = 0;
             }
-            CheckCollision.checkCollisionEnemy(this, GameManager.enemyEntities);
+
         }
+        CheckCollision.checkCollisionEnemy(this, GameManager.enemyEntities);
     }
+
 
     public void playerAnimation() {
         switch (direction) {
@@ -161,26 +159,19 @@ public class Bomber extends Entity {
 
     public void checkAlive() {
         int topLeft = flameGrid[this.getY() / tileSize][this.getX() / tileSize];
-        int topRight = flameGrid[(this.getY() + solidArea.width) / tileSize][this.getX() / tileSize];
-        int botLeft = flameGrid[this.getY() / tileSize][(this.getX() + solidArea.height) / tileSize];
-        int botRight = flameGrid[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize];
+        int topRight = flameGrid[this.getY() / tileSize][(this.getX() + solidArea.width) / tileSize];
+        int botLeft = flameGrid[(this.getY() + solidArea.height) / tileSize ][this.getX() / tileSize];
+        int botRight = flameGrid[(this.getY() + solidArea.height) / tileSize][(this.getX() + solidArea.width) / tileSize];
         if (topLeft == FLAME || topRight == FLAME || botLeft == FLAME || botRight == FLAME) isAlive = false;
     }
-
     public void checkInsideBomb() {
-        int topLeft = bombGrid[(this.getY() + solidArea.x )/ tileSize][(this.getX() + solidArea.y) / tileSize];
-        int topRight = bombGrid[(this.getY() + solidArea.width + solidArea.x) / tileSize][(this.getX() + solidArea.y) / tileSize];
-        int botLeft = bombGrid[(this.getY() + solidArea.x)/ tileSize][(this.getX() + solidArea.height) / tileSize];
-        int botRight = bombGrid[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize];
-        System.out.println(topLeft);
-        System.out.println(topRight);
-        System.out.println(botLeft);
-        System.out.println(botRight);
-        if (topLeft != BOMB && topRight != BOMB && botLeft != BOMB && botRight != BOMB) {
-            isInside =false;
-            System.out.println(isInside);
+        int topLeft = bombGrid[(this.getY() + solidAreaDefaultY) / tileSize][(this.getX() + solidAreaDefaultX)/ tileSize];
+        int topRight = bombGrid[(this.getY() + solidAreaDefaultY) / tileSize][(this.getX() + solidArea.width + solidAreaDefaultX) / tileSize];
+        int botLeft = bombGrid[(this.getY() + solidArea.height + solidAreaDefaultY) / tileSize ][(this.getX() + solidAreaDefaultX)  / tileSize];
+        int botRight = bombGrid[(this.getY() + solidArea.height + solidAreaDefaultY) / tileSize][(this.getX() + +solidAreaDefaultX +solidArea.width) / tileSize];
+        if(!(topLeft == BOMB && topRight == BOMB && botRight == BOMB && botLeft == BOMB)) {
+            isInside = false;
         }
-
     }
 
     public void checkPowerUp() {
@@ -189,120 +180,119 @@ public class Bomber extends Entity {
         int botLeft = map[this.getY() / tileSize][(this.getX() + solidArea.height) / tileSize];
         int botRight = map[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize];
 
-        if (topLeft == SPEEDITEM) {
+        if(topLeft == SPEEDITEM){
             map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof SpeedItem && row == this.getY() / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof SpeedItem && row ==  this.getY() / tileSize && col == this.getX() / tileSize){
                     ((SpeedItem) e).setEaten(true);
                 }
             }
-        } else if (topRight == SPEEDITEM) {
+        } else if (topRight == SPEEDITEM){
             map[(this.getY() + solidArea.width) / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof SpeedItem && row == (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof SpeedItem && row ==  (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize){
                     ((SpeedItem) e).setEaten(true);
                 }
             }
-        } else if (botLeft == SPEEDITEM) {
+        } else if (botLeft == SPEEDITEM){
             map[this.getY() / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof SpeedItem && row == this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof SpeedItem && row ==  this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((SpeedItem) e).setEaten(true);
                 }
             }
-        } else if (botRight == SPEEDITEM) {
+        } else if (botRight == SPEEDITEM){
             map[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof SpeedItem && row == (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof SpeedItem && row ==  (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((SpeedItem) e).setEaten(true);
                 }
             }
         }
 
-        if (topLeft == BOMBITEM) {
+        if(topLeft == BOMBITEM){
             map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof BombItem && row == this.getY() / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof BombItem && row ==  this.getY() / tileSize && col == this.getX() / tileSize){
                     ((BombItem) e).setEaten(true);
                 }
             }
-        } else if (topRight == BOMBITEM) {
+        } else if (topRight == BOMBITEM){
             map[(this.getY() + solidArea.width) / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof BombItem && row == (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof BombItem && row ==  (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize){
                     ((BombItem) e).setEaten(true);
                 }
             }
-        } else if (botLeft == BOMBITEM) {
+        } else if (botLeft == BOMBITEM){
             map[this.getY() / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof BombItem && row == this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof BombItem && row ==  this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((BombItem) e).setEaten(true);
                 }
             }
-        } else if (botRight == BOMBITEM) {
+        } else if (botRight == BOMBITEM){
             map[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof BombItem && row == (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof BombItem && row ==  (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((BombItem) e).setEaten(true);
                 }
             }
         }
 
-        if (topLeft == FLAMEITEM) {
+        if(topLeft == FLAMEITEM){
             map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof FlameItem && row == this.getY() / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof FlameItem && row ==  this.getY() / tileSize && col == this.getX() / tileSize){
                     ((FlameItem) e).setEaten(true);
                 }
             }
-        } else if (topRight == FLAMEITEM) {
+        } else if (topRight == FLAMEITEM){
             map[(this.getY() + solidArea.width) / tileSize][this.getX() / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof FlameItem && row == (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize) {
+                if(e instanceof FlameItem && row ==  (this.getY() + solidArea.width) / tileSize && col == this.getX() / tileSize){
                     ((FlameItem) e).setEaten(true);
                 }
             }
-        } else if (botLeft == FLAMEITEM) {
+        } else if (botLeft == FLAMEITEM){
             map[this.getY() / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof FlameItem && row == this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof FlameItem && row ==  this.getY() / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((FlameItem) e).setEaten(true);
                 }
             }
-        } else if (botRight == FLAMEITEM) {
+        } else if (botRight == FLAMEITEM){
             map[(this.getY() + solidArea.width) / tileSize][(this.getX() + solidArea.height) / tileSize] = GRASS;
-            for (Entity e : StaticEntities) {
+            for(Entity e : StaticEntities){
                 int row = e.getY() / tileSize;
                 int col = e.getX() / tileSize;
-                if (e instanceof FlameItem && row == (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize) {
+                if(e instanceof FlameItem && row ==  (this.getY() + solidArea.width) / tileSize && col == (this.getX() + solidArea.height) / tileSize){
                     ((FlameItem) e).setEaten(true);
                 }
             }
         }
-
     }
 
     public void playerAfterDeath() {
@@ -325,14 +315,14 @@ public class Bomber extends Entity {
 
     @Override
     public void update() {
-        //if (isAlive) {
+        if (isAlive) {
             playerAnimation();
             run();
             checkPowerUp();
             checkAlive();
 
-        //}
-       // playerAfterDeath();
+        }
+        playerAfterDeath();
 
     }
 }

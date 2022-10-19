@@ -216,6 +216,7 @@ public class Bomb extends Entity {
         isExploded = false;
         flameGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
         bombGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
+        //map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
         if (explosionEdgeDown != null)
             flameGrid[explosionEdgeDown.getY() / tileSize][explosionEdgeDown.getX() / tileSize] = GRASS;
         if (explosionEdgeRight != null)

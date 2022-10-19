@@ -13,9 +13,9 @@ public class SpeedItem extends Item {
     }
 
     @Override
-    public void update() {
+    public void update(Entity entity) {
         if (isEaten) {
-            Bomber.currentSpeed++;
+            entity.setSpeed(entity.getSpeed() + 1);
             StaticEntities.remove(this);
             isEaten = false;
         }

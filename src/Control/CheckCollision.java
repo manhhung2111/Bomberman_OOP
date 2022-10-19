@@ -45,7 +45,7 @@ public class CheckCollision {
                 entityTopRow = (int)((entityTopWorldY - entity.getSpeed()) / tileSize);
                 tileNum1 = map[entityTopRow][entityLeftCol];
                 tileNum2 = map[entityTopRow][entityRightCol];
-                if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK) {
+                if (tileNum1 == WALL || tileNum2 == WALL || tileNum1 == BRICK || tileNum2 == BRICK ) {
                     entity.collisionOn = true;
                 }
                 break;

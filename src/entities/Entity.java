@@ -15,8 +15,7 @@ public abstract class Entity {
     public Rectangle solidArea;
     public boolean collisionOn = false;
     public boolean collisionBomb = false;
-    public boolean isInside = false;
-    protected double speed = 1; //speed of entity
+    protected int speed = 1; //speed of entity
     public int solidAreaDefaultX, solidAreaDefaultY;
 
     public String direction = ""; //direction of player
@@ -37,12 +36,11 @@ public abstract class Entity {
     public int getFPS() {
         return FPS;
     }
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
+    public void setSpeed(int speed) { this.speed = speed;
     }
     public int getX() {
         return x;

@@ -22,4 +22,9 @@ public class Item extends Entity {
     public void update() {
 
     }
+
+
+    public void update(Entity entity) {
+
+    }
 }
