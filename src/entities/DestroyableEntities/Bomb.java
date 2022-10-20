@@ -1,6 +1,7 @@
 package entities.DestroyableEntities;
 
 import Control.CheckCollision;
+import Control.SoundManager;
 import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import graphics.Sprite;
@@ -177,8 +178,8 @@ public class Bomb extends Entity {
     }
 
     public void explode() {
+        SoundManager.playBombExplosionSound();
         isExploded = true;
-
         if (!isCreatedEdge) createExplosionEdge();
         if (flamePowerUp > 0 && !isCreatedMiddle) createExplosionMiddle();
         this.setImg(Sprite.bomb_exploded2.getFxImage());

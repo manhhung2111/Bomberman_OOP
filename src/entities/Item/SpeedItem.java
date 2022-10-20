@@ -1,5 +1,6 @@
 package entities.Item;
 
+import Control.SoundManager;
 import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import javafx.scene.image.Image;
@@ -15,6 +16,7 @@ public class SpeedItem extends Item {
     @Override
     public void update(Entity entity) {
         if (isEaten) {
+            SoundManager.playCollectItemsSound();
             entity.setSpeed(entity.getSpeed() + 1);
             StaticEntities.remove(this);
             isEaten = false;

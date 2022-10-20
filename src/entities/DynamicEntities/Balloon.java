@@ -14,11 +14,6 @@ public class Balloon extends Enemy {
     private int timeAfterDeath = 24;
     public Balloon(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
-        this.speed = 1;
-        this.direction = "down";
-        solidArea = new Rectangle(1,1,30,30);
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
     }
 
 

@@ -1,5 +1,6 @@
 package entities.Item;
 
+import Control.SoundManager;
 import entities.DynamicEntities.Bomber;
 import entities.Entity;
 import javafx.scene.image.Image;
@@ -15,6 +16,7 @@ public class BombItem extends Item {
     @Override
     public void update() {
         if(isEaten){
+            SoundManager.playCollectItemsSound();
             Bomber.currentBomb++;
             StaticEntities.remove(this);
             isEaten = false;

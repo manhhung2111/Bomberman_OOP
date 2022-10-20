@@ -4,6 +4,7 @@ import Control.CheckCollision;
 import entities.Entity;
 import javafx.scene.image.Image;
 
+import java.awt.*;
 import java.util.Random;
 
 import static Control.GameManager.*;
@@ -14,6 +15,11 @@ public class Enemy extends Entity {
     protected boolean isDead = false;
     public Enemy(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+        solidArea = new Rectangle(1,1,30/2*3,30/2*3);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+        this.speed = 1;
+        this.direction = "down";
     }
 
     public void moveable(){

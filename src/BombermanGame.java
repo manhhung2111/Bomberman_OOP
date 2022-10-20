@@ -1,5 +1,6 @@
 import Control.GameManager;
 
+import Menu.ViewManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -16,10 +17,12 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        gameManager = new GameManager();
+        ViewManager viewManager = new ViewManager();
+        stage = viewManager.getMainStage();
+        //gameManager = new GameManager();
         stage.setTitle("Bomber man");
-        stage.setScene(gameManager.getScene());
+        //stage.setScene(gameManager.getScene());
         stage.show();
-        gameManager.start();
+        //gameManager.start();
     }
 }

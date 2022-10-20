@@ -1,5 +1,6 @@
 package Control;
 
+import Menu.Sound;
 import entities.DestroyableEntities.Bomb;
 import entities.DestroyableEntities.Brick;
 import entities.DynamicEntities.*;
@@ -43,7 +44,7 @@ public class GameManager {
     public static final int ONEAL = '*';
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    public static final int tileSize = 32;
+    public static final int tileSize = Sprite.SCALED_SIZE;
 
     public static int[][] map = new int[HEIGHT][WIDTH];
     public static int[][] bombGrid = new int[HEIGHT][WIDTH];
@@ -188,10 +189,11 @@ public class GameManager {
                     isUpKeyPressed = true;
                     player.direction = "up";
                 } else if (event.getCode() == KeyCode.SPACE) {
-                    if(Bomber.currentBomb > 0){
+                    Bomb newBomb = new Bomb((player.getX() + tileSize / 2) / tileSize,
+                            (player.getY() + tileSize / 2) / tileSize, Sprite.bomb.getFxImage());
+                    if(Bomber.currentBomb > 0 && bombGrid[newBomb.getY()/tileSize][newBomb.getX()/tileSize] != BOMB) {
+                        SoundManager.playBombPlantedSound();
                         isSpaceKeyPressed = true;
-                        Bomb newBomb = new Bomb((player.getX() + tileSize / 2) / 32,
-                                (player.getY() + tileSize / 2) / 32, Sprite.bomb.getFxImage());
                         bombGrid[newBomb.getY()/tileSize][newBomb.getX()/tileSize] = BOMB;
                         BombList.add(newBomb);
                         Bomber.currentBomb--;

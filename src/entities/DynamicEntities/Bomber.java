@@ -3,6 +3,7 @@ package entities.DynamicEntities;
 
 import Control.CheckCollision;
 import Control.GameManager;
+import Control.SoundManager;
 import entities.Entity;
 import entities.Item.BombItem;
 import entities.Item.FlameItem;
@@ -26,7 +27,7 @@ public class Bomber extends Entity {
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
-        solidArea = new Rectangle(4, 5, 16, 24);
+        solidArea = new Rectangle(4/2*3, 5/2*3, 16/2*3, 24/2*3);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         isInside = true;
@@ -295,8 +296,9 @@ public class Bomber extends Entity {
         }
     }
 
-    public void playerAfterDeath() {
+    public void playerAfterDeath(){
         if (!isAlive) {
+            SoundManager.playPlayerDeathSound();
             if (timeAfterDeath >= 12) {
                 this.setImg(Sprite.player_dead1.getFxImage());
                 timeAfterDeath--;
@@ -308,6 +310,7 @@ public class Bomber extends Entity {
                 timeAfterDeath--;
             } else {
                 DynamicEntities.remove(this);
+                System.exit(0);
             }
         }
     }
@@ -320,9 +323,7 @@ public class Bomber extends Entity {
             run();
             checkPowerUp();
             checkAlive();
-
         }
         playerAfterDeath();
-
     }
 }
