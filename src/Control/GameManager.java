@@ -1,6 +1,8 @@
 package Control;
 
+import MapLevels.MapLevel;
 import Menu.Sound;
+import entities.Ai.BFS;
 import entities.DestroyableEntities.Bomb;
 import entities.DestroyableEntities.Brick;
 import entities.DynamicEntities.*;
@@ -21,6 +23,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,7 +52,12 @@ public class GameManager {
 
     public static int[][] map = new int[HEIGHT][WIDTH];
     public static int[][] bombGrid = new int[HEIGHT][WIDTH];
-    public boolean isRunning = true;
+    private boolean isRunning = true;
+    private boolean isMapCreated = false;
+    public static int level = 1;
+
+    public static GameManager gameManager = null;
+
     private GraphicsContext graphicsContext;
     private Canvas canvas;
 
@@ -57,7 +66,7 @@ public class GameManager {
     public static List<Entity> DynamicEntities = new ArrayList<>();
     public static List<Entity> StaticEntities = new ArrayList<>();
     public static List<Entity> BombList = new ArrayList<>();
-    public static List<Entity> enemyEntities = new ArrayList<>();
+    public static List<Entity> enemyEntities = new ArrayList<Entity>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
 
@@ -67,6 +76,8 @@ public class GameManager {
     public static boolean isUpKeyPressed;
     public static boolean isDownKeyPressed;
     public boolean isSpaceKeyPressed;
+
+    public static Pair<Integer, Integer> portal;
     // Constructor
 
     public GameManager() {
@@ -105,72 +116,32 @@ public class GameManager {
     public List<Entity> getStaticEntities() {
         return StaticEntities;
     }
-    //end region
 
-
-    public void createMap() throws FileNotFoundException {
-        File file = new File("res/levels/Level1.txt");
-        Scanner scanner = new Scanner(file);
-        int level = Integer.parseInt(scanner.next());
-        int rows = Integer.parseInt(scanner.next());
-        int cols = Integer.parseInt(scanner.next());
-        scanner.nextLine();
-        int i = 0;
-        List<String> line = new ArrayList<>();
-        while (scanner.hasNextLine()) {
-            line.add(scanner.nextLine());
-        }
-        for (String s : line) {
-            for (int j = 0; j < s.length(); j++) {
-                Entity object;
-                char c = s.charAt(j);
-                if (c == '2') {
-                    map[i][j] = WALL;
-                    object = new Wall(j, i, Sprite.wall.getFxImage());
-                    StaticEntities.add(object);
-                } else if (c == '3') {
-                    map[i][j] = BRICK;
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    object = new Brick(j, i, Sprite.brick.getFxImage());
-                    StaticEntities.add(object);
-                } else if(c == '5'){
-                    map[i][j] = BRICK;
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    StaticEntities.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
-                    object = new Brick(j, i, Sprite.brick.getFxImage());
-                    StaticEntities.add(object);
-                } else if(c == '6'){
-                    map[i][j] = BRICK;
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    StaticEntities.add(new SpeedItem(j, i, Sprite.powerup_speed.getFxImage()));
-                    object = new Brick(j, i, Sprite.brick.getFxImage());
-                    StaticEntities.add(object);
-                }else if(c == '7'){
-                    map[i][j] = BRICK;
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    StaticEntities.add(new FlameItem(j, i, Sprite.powerup_flames.getFxImage()));
-                    object = new Brick(j, i, Sprite.brick.getFxImage());
-                    StaticEntities.add(object);
-                } else if(c == '#'){
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    enemyEntities.add(new Balloon(j, i, Sprite.balloom_left3.getFxImage()));
-                }else if(c == '*'){
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    enemyEntities.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
-                }else if(c == '@'){
-                    StaticEntities.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    enemyEntities.add(new Doll(j, i, Sprite.doll_right1.getFxImage()));
-                } else{
-                    map[i][j] = GRASS;
-                    object = new Grass(j, i, Sprite.grass.getFxImage());
-                    StaticEntities.add(object);
-                }
-
-            }
-            i++;
-        }
-        scanner.close();
+    public boolean isRunning() {
+        return isRunning;
     }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public boolean isMapCreated() {
+        return isMapCreated;
+    }
+
+    public void setMapCreated(boolean mapCreated) {
+        isMapCreated = mapCreated;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    //endregion
 
     public void createKeyListeners() {
         this.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -198,6 +169,8 @@ public class GameManager {
                         BombList.add(newBomb);
                         Bomber.currentBomb--;
                     }
+                } else if(event.getCode() == KeyCode.S){
+                    player.setAutomated(true);
                 }
             }
         });
@@ -243,10 +216,12 @@ public class GameManager {
             final double drawInterval = 1000000000 / player.getFPS();
             double delta = 0;
             long lastTime = System.nanoTime();
+
             @Override
             public void handle(long l) {
                 isRunning = true;
                 delta += (l - lastTime) / drawInterval;
+                //System.out.println(delta);
                 lastTime = l;
                 if (delta >= 1) {
                     render();
@@ -254,18 +229,35 @@ public class GameManager {
                     createKeyListeners();
                     delta--;
                 }
+                if(!isMapCreated) {
+                    try {
+                        new MapLevel(level);
+                        isMapCreated = true;
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         };
         timer.start();
-        createMap();
     }
 
 
-    public void stop() throws Exception {
-        System.out.println("STOP");
-        Platform.exit();
-        System.exit(0);
+    public void reset(AnimationTimer timer){
+        this.canvas = null;
+        this.graphicsContext = null;
+        this.scene = null;
+        DynamicEntities.clear();
+        StaticEntities.clear();
+        BombList.clear();
+        enemyEntities.clear();;
+        player = null;
+        isDownKeyPressed = false;
+        isLeftKeyPressed = false;
+        isUpKeyPressed = false;
+        isRightKeyPressed = false;
+        isMapCreated = false;
+        timer.stop();
     }
-
 }
 

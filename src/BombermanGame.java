@@ -1,16 +1,16 @@
 import Control.GameManager;
-
+import static Control.GameManager.*;
 import Menu.ViewManager;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
 
 
 import java.io.FileNotFoundException;
 
 public class BombermanGame extends Application {
-    public static GameManager gameManager;
-
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }

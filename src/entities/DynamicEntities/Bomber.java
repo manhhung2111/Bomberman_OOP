@@ -4,35 +4,43 @@ package entities.DynamicEntities;
 import Control.CheckCollision;
 import Control.GameManager;
 import Control.SoundManager;
+import static Menu.ViewManager.*;
+import Menu.ViewManager;
+
+import entities.Ai.BFS;
 import entities.Entity;
 import entities.Item.BombItem;
 import entities.Item.FlameItem;
 import entities.Item.SpeedItem;
+import entities.StaticEntities.Portal;
 import graphics.Sprite;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 
 import static Control.GameManager.*;
 
 
 public class Bomber extends Entity {
     public static int flamePowerUp = 0;
-    public static int currentBomb;
+    public static int currentBomb = 1;
     protected Sprite _sprite;
     private boolean isAlive;
     private boolean isInside;
 
     private int timeAfterDeath = 18;
+    private boolean isAutomated = false;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
         solidArea = new Rectangle(4/2*3, 5/2*3, 16/2*3, 24/2*3);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        this.speed = 2;
         isInside = true;
         isAlive = true;
-        currentBomb = 1;
     }
 
     public boolean isAlive() {
@@ -41,6 +49,14 @@ public class Bomber extends Entity {
 
     public void setAlive(boolean alive) {
         isAlive = alive;
+    }
+
+    public boolean isAutomated() {
+        return isAutomated;
+    }
+
+    public void setAutomated(boolean automated) {
+        isAutomated = automated;
     }
 
     public void run() {
@@ -62,7 +78,6 @@ public class Bomber extends Entity {
                 CheckCollision.checkCollisionBomb(this);
                 isInside = true;
             }
-            System.out.println(isInside + " " + collisionOn + " " + collisionBomb);
             if (!collisionOn && !collisionBomb) {
                 switch (direction) {
                     case "up":
@@ -296,7 +311,18 @@ public class Bomber extends Entity {
         }
     }
 
-    public void playerAfterDeath(){
+    public void checkLevelUp(){
+        if(enemyEntities.size() > 0) return;
+        for(Entity entity : StaticEntities){
+            if(entity instanceof Portal && map[player.getY()/tileSize][player.getX()/tileSize] == PORTAL){
+                System.out.println("has");
+                ((Portal) entity).setPlayerPassed(true);
+                break;
+            }
+        }
+    }
+
+    public void playerAfterDeath() throws FileNotFoundException {
         if (!isAlive) {
             SoundManager.playPlayerDeathSound();
             if (timeAfterDeath >= 12) {
@@ -310,7 +336,9 @@ public class Bomber extends Entity {
                 timeAfterDeath--;
             } else {
                 DynamicEntities.remove(this);
-                System.exit(0);
+                gameManager = null;
+                player.reset();
+                ViewManager.setGameOverScene();
             }
         }
     }
@@ -323,7 +351,19 @@ public class Bomber extends Entity {
             run();
             checkPowerUp();
             checkAlive();
+            checkLevelUp();
+            if(isAutomated) BFS.autoKillEnemies();
         }
-        playerAfterDeath();
+        try {
+            playerAfterDeath();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void reset(){
+        flamePowerUp = 0;
+        currentBomb = 1;
+        this.speed = 2;
     }
 }

@@ -38,8 +38,8 @@ import static graphics.Sprite.bomb;
 
 public class ViewManager {
     private AnchorPane mainPane;
-    private Scene mainScene;
-    private Stage mainStage;
+    private static Scene mainScene;
+    public static Stage mainStage;
 
     private final static int MENU_BUTTON_START_X = 100;
     private final static int MENU_BUTTON_START_Y = 150;
@@ -205,14 +205,12 @@ public class ViewManager {
         CustomMenuButton startButton  = new CustomMenuButton("START");
         addMenuButton(startButton);
 
-
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                GameManager gameManager = new GameManager();
-
-                mainStage.setScene(gameManager.getScene());
                 try {
+                    if(gameManager == null) gameManager = new GameManager();
+                    mainStage.setScene(gameManager.getScene());
                     gameManager.start();
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
@@ -297,4 +295,71 @@ public class ViewManager {
 
         mainPane.getChildren().add(logo);
     }
+
+
+    public static void setGameOverScene() throws FileNotFoundException {
+        AnchorPane anchorPane = new AnchorPane();
+        Scene scene = new Scene(anchorPane, WIDTH * tileSize, HEIGHT * tileSize);
+
+        Image backgroundImage = new Image("/menu/new_background.jpg", WIDTH * SCALED_SIZE, HEIGHT * SCALED_SIZE, false, true);
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null );
+        anchorPane.setBackground(new Background(background));
+
+        ImageView gameOver = new ImageView(new Image("/menu/gameOver.png"));
+        gameOver.setTranslateX(150);
+        gameOver.setTranslateY(30);
+        anchorPane.getChildren().add(gameOver);
+
+        CustomMenuButton exitButton  = new CustomMenuButton("EXIT");
+        exitButton.setLayoutX(300);
+        exitButton.setLayoutY(400);
+        anchorPane.getChildren().add(exitButton);
+        exitButton.setOnMousePressed(event -> {
+            System.exit(0);
+        });
+
+        CustomMenuButton replayButton  = new CustomMenuButton("REPLAY");
+        replayButton.setLayoutX(500);
+        replayButton.setLayoutY(400);
+        anchorPane.getChildren().add(replayButton);
+        replayButton.setOnMousePressed(event -> {
+            mainStage.setScene(mainScene);
+        });
+
+        mainStage.setScene(scene);
+    }
+
+    public static void setWinnerScene() throws FileNotFoundException {
+        AnchorPane anchorPane = new AnchorPane();
+        Scene scene = new Scene(anchorPane, WIDTH * tileSize, HEIGHT * tileSize);
+
+        Image backgroundImage = new Image("/menu/new_background.jpg", WIDTH * SCALED_SIZE, HEIGHT * SCALED_SIZE, false, true);
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null );
+        anchorPane.setBackground(new Background(background));
+
+        ImageView winner = new ImageView(new Image("/menu/winner.png"));
+        winner.setTranslateX(150);
+        winner.setTranslateY(30);
+        anchorPane.getChildren().add(winner);
+
+        CustomMenuButton exitButton  = new CustomMenuButton("EXIT");
+        exitButton.setLayoutX(150);
+        exitButton.setLayoutY(500);
+        anchorPane.getChildren().add(exitButton);
+        exitButton.setOnMousePressed(event -> {
+            System.exit(0);
+        });
+
+        CustomMenuButton replayButton  = new CustomMenuButton("REPLAY");
+        replayButton.setLayoutX(400);
+        replayButton.setLayoutY(500);
+        anchorPane.getChildren().add(replayButton);
+        replayButton.setOnMousePressed(event -> {
+            mainStage.setScene(mainScene);
+        });
+
+        mainStage.setScene(scene);
+    }
+
+
 }

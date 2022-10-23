@@ -13,6 +13,7 @@ import java.util.List;
 
 import static entities.DynamicEntities.Bomber.flamePowerUp;
 import static Control.GameManager.*;
+import static entities.Ai.BFS.*;
 public class Bomb extends Entity {
     private double timeToExplode = 120;
     private double timeAfterExplosion = 20;
@@ -35,7 +36,14 @@ public class Bomb extends Entity {
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         solidArea = new Rectangle(2, 4, 32, 30);
+    }
 
+    public double getTimeToExplode() {
+        return timeToExplode;
+    }
+
+    public void setTimeToExplode(double timeToExplode) {
+        this.timeToExplode = timeToExplode;
     }
 
     public void createExplosionEdge() {
@@ -211,10 +219,21 @@ public class Bomb extends Entity {
                 }
             }
         }
+
+        for (Entity entity : BombList){
+            if(entity instanceof Bomb){
+                int row = entity.getY() / tileSize;
+                int col = entity.getX() / tileSize;
+                if(flameGrid[row][col] == FLAME){
+                    ((Bomb) entity).setTimeToExplode(0);
+                }
+            }
+        }
     }
 
     public void removeAfterExplosion() {
         isExploded = false;
+        AI_isBombExploded = true;
         flameGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
         bombGrid[this.getY() / tileSize][this.getX() / tileSize] = GRASS;
         //map[this.getY() / tileSize][this.getX() / tileSize] = GRASS;

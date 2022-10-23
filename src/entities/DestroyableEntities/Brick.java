@@ -4,6 +4,7 @@ import entities.Entity;
 import entities.Item.BombItem;
 import entities.Item.FlameItem;
 import entities.Item.SpeedItem;
+import entities.StaticEntities.Portal;
 import graphics.Sprite;
 import javafx.scene.image.Image;
 import static Control.GameManager.*;
@@ -48,6 +49,8 @@ public class Brick extends Entity {
                             map[y / tileSize][x / tileSize] = BOMBITEM;
                         } else if (e instanceof FlameItem){
                             map[y / tileSize][x / tileSize] = FLAMEITEM;
+                        } else if (e instanceof Portal){
+                            map[y / tileSize][x / tileSize] = PORTAL;
                         } else{
                             map[y / tileSize][x / tileSize] = GRASS;
                         }
