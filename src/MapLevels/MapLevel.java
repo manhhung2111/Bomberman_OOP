@@ -11,6 +11,7 @@ import entities.StaticEntities.Portal;
 import entities.StaticEntities.Wall;
 import graphics.Sprite;
 import javafx.util.Pair;
+import static entities.DynamicEntities.Bomber.*;
 
 import static Control.GameManager.*;
 
@@ -34,6 +35,7 @@ public class MapLevel {
                 break;
             case 3:
                 createMap(LEVEL3_PATH);
+                flamePowerUp = 1;
                 break;
             default:
                 ViewManager.setWinnerScene();

@@ -16,7 +16,7 @@ public class Minvo extends Enemy {
 
     public Minvo(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
-        this.direction = ((new Random()).nextBoolean())? "left" : "right";
+        this.direction = "right";
     }
 
     @Override
