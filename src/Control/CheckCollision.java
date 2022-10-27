@@ -157,4 +157,32 @@ public class CheckCollision {
             enemy.get(i).solidArea.y = enemy.get(i).solidAreaDefaultY;
         }
     }
+    public static void checkBullet(Entity entity) {
+        player.solidArea.x = player.getX() + player.solidArea.x;
+        player.solidArea.y = player.getY() + player.solidArea.y;
+        entity.solidArea.x = entity.getX() + entity.solidArea.x;
+        entity.solidArea.y = entity.getY() + entity.solidArea.y;
+
+        switch(entity.direction) {
+            case "up":
+                player.solidArea.y -= player.getSpeed();
+                break;
+            case "down":
+                player.solidArea.y += player.getSpeed();
+                break;
+            case "left":
+                player.solidArea.x -= player.getSpeed();
+                break;
+            case "right":
+                player.solidArea.x += player.getSpeed();
+                break;
+        }
+        if(player.solidArea.intersects(entity.solidArea)){
+            player.setAlive(false);
+        }
+        player.solidArea.x = player.solidAreaDefaultX;
+        player.solidArea.y = player.solidAreaDefaultY;
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
+    }
 }

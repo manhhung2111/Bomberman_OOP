@@ -19,6 +19,8 @@ public abstract class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
 
     public String direction = ""; //direction of player
+    public boolean alive = false;
+    public Projectile projectile;
 
     public static final int FPS =60;
 
@@ -31,6 +33,7 @@ public abstract class Entity {
         this.y = yUnit * Sprite.SCALED_SIZE;
         this.img = img;
     }
+    public Entity() {}
 
     //region Getter and Setter Methods
     public int getFPS() {

@@ -67,6 +67,7 @@ public class GameManager {
     public static List<Entity> StaticEntities = new ArrayList<>();
     public static List<Entity> BombList = new ArrayList<>();
     public static List<Entity> enemyEntities = new ArrayList<Entity>();
+    public static List<Entity> projectileList = new ArrayList<>();
     public static int[][] flameGrid = new int[HEIGHT][WIDTH];
     public static Bomber player;
 
@@ -201,6 +202,7 @@ public class GameManager {
         BombList.forEach(Entity::update);
         enemyEntities.forEach(Entity::update);
         DynamicEntities.forEach(Entity::update);
+        projectileList.forEach(Entity::update);
     }
 
     public void render() {
@@ -209,6 +211,7 @@ public class GameManager {
         BombList.forEach(g -> g.render(graphicsContext));
         enemyEntities.forEach(g -> g.render(graphicsContext));
         DynamicEntities.forEach(g -> g.render(graphicsContext));
+        projectileList.forEach(g->g.render(graphicsContext));
     }
 
     public void start() throws FileNotFoundException {

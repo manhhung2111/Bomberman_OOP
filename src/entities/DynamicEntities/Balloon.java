@@ -1,6 +1,8 @@
 package entities.DynamicEntities;
 
 import static Control.GameManager.*;
+import static Control.GameManager.projectileList;
+
 import Control.CheckCollision;
 import entities.Entity;
 import graphics.Sprite;
@@ -10,10 +12,12 @@ import java.awt.*;
 import java.util.Random;
 
 public class Balloon extends Enemy {
+    public int timeProjectile = 0;
     public int getAnimation = 0;
     private int timeAfterDeath = 24;
     public Balloon(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
+        projectile = new Bullet();
     }
 
 
@@ -54,6 +58,19 @@ public class Balloon extends Enemy {
                     this.setImg(Sprite.balloom_left3.getFxImage());
                 }
                 getAnimation++;
+            }
+            if(projectile.alive == false && timeProjectile == 340){
+                timeProjectile = 0;
+                projectile.set(x, y, direction, true, this);
+                projectileList.add(projectile);
+            }
+            for(int i =0 ; i< projectileList.size(); i++) {
+                if(projectileList.get(i).alive == false){
+                    projectileList.remove(i);
+                }
+            }
+            if(timeProjectile <340){
+                timeProjectile++;
             }
         }
     }
